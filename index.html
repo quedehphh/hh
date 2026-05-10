@@ -76,22 +76,7 @@
     <h1>🛡️ QUEDE Studio</h1>
     <div class="subtitle">护航工作室 · 云端点单系统</div>
 
-    <!-- 配置区(仅首次使用) -->
-    <div class="config-box" id="configBox" style="display:none;">
-      <h3>⚙️ 首次配置</h3>
-      <div class="config-row">
-        <label>Gitee令牌:</label>
-        <input type="password" id="giteeToken" placeholder="输入你的Gitee私人令牌" style="flex:1;">
-      </div>
-      <div class="config-row">
-        <label>仓库路径:</label>
-        <input type="text" id="repoPath" placeholder="用户名/仓库名" style="flex:1;">
-      </div>
-      <button class="btn" onclick="saveConfig()">💾 保存配置</button>
-      <div style="color:#8080cc; margin-top:10px; font-size:14px;">
-        💡 令牌获取: Gitee → 设置 → 私人令牌 → 生成新令牌(勾选user_info和projects权限)
-      </div>
-    </div>
+    
 
     <!-- 登录/注册 -->
     <div class="auth-box" id="authBox">
@@ -176,34 +161,12 @@
   <script>
     // ============ Gitee API 配置 ============
     const GITEE_API = 'https://gitee.com/api/v5';
-    let giteeToken = '972692c25a31e4d1657eccdc53d7d553';
+    let giteeToken = '4a115efe6c57c0b7947746993a759689';
     let repoOwner = 'syqdsg';
     let repoName = 'quedehh';
     let currentUser = null;
     let cart = [];
     let cachedData = null;
-
-    // 从localStorage读取配置
-    function loadConfig() {
-      const config = JSON.parse(localStorage.getItem('studio_config') || '{}');
-      if (config.token && config.repo) {
-        giteeToken = config.token;
-        [repoOwner, repoName] = config.repo.split('/');
-        document.getElementById('configBox').style.display = 'none';
-        loadData();
-      } else {
-        document.getElementById('configBox').style.display = 'block';
-      }
-    }
-
-    function saveConfig() {
-      const token = document.getElementById('giteeToken').value.trim();
-      const repo = document.getElementById('repoPath').value.trim();
-      
-      if (!token || !repo) {
-        alert('请填写令牌和仓库路径');
-        return;
-      }
 
       const config = { token, repo };
       localStorage.setItem('studio_config', JSON.stringify(config));
