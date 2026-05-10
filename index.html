@@ -2,695 +2,761 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>QUEDE Studio 护航工作室点单系统</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, 'Helvetica Neue', system-ui, sans-serif; }
-    body { background: linear-gradient(145deg, #0a0a1a 0%, #1a1a2e 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
-    .container { max-width: 1100px; width: 100%; background: rgba(20, 20, 40, 0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 2rem; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(100, 100, 255, 0.2); padding: 2rem 2rem 2.5rem; border: 1px solid rgba(100, 100, 255, 0.3); color: #e0e0ff; }
-
-    h1 { display: flex; align-items: center; gap: 0.8rem; font-weight: 700; font-size: 2rem; color: #c0c0ff; margin-bottom: 0.5rem; letter-spacing: -0.5px; }
-    .subtitle { color: #8080cc; margin-bottom: 2rem; font-size: 0.95rem; border-left: 4px solid #6c6cff; padding-left: 1rem; }
-
-    /* 登录区域 */
-    .auth-area { background: rgba(30, 30, 60, 0.6); border-radius: 1.5rem; padding: 1.5rem; margin-bottom: 2rem; border: 1px solid rgba(100, 100, 255, 0.2); }
-    .auth-tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
-    .auth-tab { background: transparent; border: 1px solid rgba(100, 100, 255, 0.4); padding: 0.5rem 1.5rem; border-radius: 2rem; color: #b0b0ff; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: all 0.3s; }
-    .auth-tab.active { background: #6c6cff; color: white; border-color: #6c6cff; box-shadow: 0 0 20px rgba(108, 108, 255, 0.4); }
-    .auth-form { display: none; gap: 0.8rem; align-items: center; flex-wrap: wrap; }
-    .auth-form.active { display: flex; }
-
-    input, select, textarea { background: rgba(10, 10, 30, 0.8); border: 1px solid rgba(100, 100, 255, 0.3); padding: 0.75rem 1.2rem; border-radius: 1.5rem; font-size: 0.95rem; outline: none; color: #e0e0ff; transition: 0.3s; }
-    input:focus, select:focus, textarea:focus { border-color: #6c6cff; box-shadow: 0 0 15px rgba(108, 108, 255, 0.3); }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Microsoft YaHei', sans-serif; }
+    body { background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
+    .container { max-width: 1100px; width: 100%; background: rgba(20,20,40,0.9); backdrop-filter: blur(20px); border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); padding: 30px; color: #e0e0ff; border: 1px solid rgba(100,100,255,0.2); }
+    
+    h1 { text-align: center; color: #c0c0ff; margin-bottom: 10px; font-size: 2.2em; }
+    .subtitle { text-align: center; color: #8080cc; margin-bottom: 30px; }
+    
+    .config-box { background: rgba(30,30,60,0.8); padding: 20px; border-radius: 10px; margin-bottom: 20px; border: 1px solid rgba(100,100,255,0.3); }
+    .config-box h3 { color: #c0c0ff; margin-bottom: 15px; }
+    .config-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 10px; }
+    .config-row label { min-width: 80px; color: #b0b0ff; }
+    
+    input, select { padding: 10px 15px; background: rgba(10,10,30,0.8); border: 1px solid rgba(100,100,255,0.3); border-radius: 5px; font-size: 14px; color: #e0e0ff; outline: none; }
+    input:focus { border-color: #6c6cff; box-shadow: 0 0 10px rgba(108,108,255,0.3); }
     input::placeholder { color: #6060aa; }
-
-    .btn { background: #6c6cff; color: white; border: none; padding: 0.7rem 1.8rem; border-radius: 2.5rem; font-weight: 600; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(108, 108, 255, 0.3); white-space: nowrap; font-size: 0.9rem; }
-    .btn:hover { background: #8080ff; box-shadow: 0 6px 20px rgba(108, 108, 255, 0.5); transform: translateY(-1px); }
-    .btn-outline { background: transparent; border: 1px solid #6c6cff; color: #b0b0ff; }
-    .btn-outline:hover { background: rgba(108, 108, 255, 0.1); }
-    .btn-danger { background: #ff4444; box-shadow: 0 4px 15px rgba(255, 68, 68, 0.3); }
-    .btn-danger:hover { background: #ff6666; }
-    .btn-small { padding: 0.3rem 1rem; font-size: 0.8rem; border-radius: 2rem; }
-    .btn-success { background: #00cc88; box-shadow: 0 4px 15px rgba(0, 204, 136, 0.3); }
-
-    /* 主界面 */
+    
+    .btn { padding: 10px 20px; background: #6c6cff; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: all 0.3s; }
+    .btn:hover { background: #8080ff; transform: translateY(-1px); box-shadow: 0 5px 15px rgba(108,108,255,0.4); }
+    .btn-small { padding: 5px 15px; font-size: 12px; }
+    .btn-danger { background: #ff4757; }
+    .btn-success { background: #00cc88; }
+    
+    .auth-box { background: rgba(30,30,60,0.6); padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+    .auth-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+    .auth-tab { padding: 10px 20px; border: 1px solid rgba(100,100,255,0.3); background: transparent; color: #b0b0ff; cursor: pointer; border-radius: 5px; font-weight: bold; }
+    .auth-tab.active { background: #6c6cff; color: white; border-color: #6c6cff; }
+    .auth-form { display: none; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .auth-form.active { display: flex; }
+    
     .main-app { display: none; }
     .main-app.active { display: block; }
-    .user-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
-    .user-info { display: flex; align-items: center; gap: 0.5rem; color: #b0b0ff; }
-
-    .tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
-    .tab-btn { background: rgba(30, 30, 60, 0.6); border: 1px solid rgba(100, 100, 255, 0.2); padding: 0.6rem 1.5rem; border-radius: 2rem; font-weight: 600; color: #b0b0ff; cursor: pointer; transition: all 0.3s; font-size: 0.9rem; }
-    .tab-btn.active { background: #6c6cff; color: white; border-color: #6c6cff; box-shadow: 0 0 20px rgba(108, 108, 255, 0.4); }
-
-    .panel { display: none; animation: fadeIn 0.3s ease; }
+    .user-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    
+    .tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+    .tab-btn { padding: 10px 20px; background: rgba(30,30,60,0.6); border: 1px solid rgba(100,100,255,0.2); color: #b0b0ff; cursor: pointer; border-radius: 5px; font-weight: bold; }
+    .tab-btn.active { background: #6c6cff; color: white; border-color: #6c6cff; }
+    
+    .panel { display: none; animation: fadeIn 0.3s; }
     .panel.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-    .card { background: rgba(30, 30, 60, 0.5); backdrop-filter: blur(10px); border-radius: 1.5rem; padding: 1.5rem; border: 1px solid rgba(100, 100, 255, 0.2); margin-bottom: 1.5rem; }
-    .card h3 { color: #c0c0ff; margin-bottom: 1rem; }
-
-    .dish-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem; }
-    .dish-item { background: rgba(40, 40, 80, 0.5); border-radius: 1rem; padding: 1.2rem; border: 1px solid rgba(100, 100, 255, 0.2); transition: all 0.3s; }
-    .dish-item:hover { border-color: #6c6cff; box-shadow: 0 0 20px rgba(108, 108, 255, 0.15); }
-    .dish-name { font-weight: 700; font-size: 1.1rem; color: #c0c0ff; }
-    .dish-price { color: #00cc88; font-weight: 700; font-size: 1.2rem; margin: 0.5rem 0; }
-    .dish-desc { color: #8080cc; font-size: 0.85rem; margin-bottom: 0.8rem; }
-
-    .order-item { display: flex; justify-content: space-between; align-items: center; padding: 1rem; border-bottom: 1px solid rgba(100, 100, 255, 0.15); flex-wrap: wrap; gap: 0.5rem; }
-    .order-item:last-child { border-bottom: none; }
-    .order-info { flex: 1; min-width: 200px; }
-    .order-name { font-weight: 700; color: #c0c0ff; }
-    .order-meta { font-size: 0.85rem; color: #8080cc; }
-
-    .badge { display: inline-block; padding: 0.3rem 0.8rem; border-radius: 1.5rem; font-weight: 700; font-size: 0.8rem; }
-    .badge-pending { background: #ffeeba; color: #856404; }
-    .badge-paid { background: #d4edda; color: #155724; }
-    .badge-completed { background: #cce5ff; color: #004085; }
-    .badge-unpaid { background: #f8d7da; color: #721c24; }
-
-    .result-box { max-height: 400px; overflow-y: auto; }
-    .result-box::-webkit-scrollbar { width: 6px; }
-    .result-box::-webkit-scrollbar-track { background: transparent; }
-    .result-box::-webkit-scrollbar-thumb { background: rgba(100, 100, 255, 0.3); border-radius: 3px; }
-
-    .empty-state { text-align: center; padding: 2rem; color: #6060aa; }
-
-    hr { border: none; border-top: 1px solid rgba(100, 100, 255, 0.2); margin: 1.5rem 0; }
-
-    @media (max-width: 640px) {
-      .container { padding: 1.2rem; }
-      .btn { padding: 0.6rem 1.2rem; font-size: 0.85rem; }
-      input, select { padding: 0.6rem 1rem; }
-      .dish-grid { grid-template-columns: 1fr; }
-    }
+    
+    .dish-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; }
+    .dish-card { background: rgba(40,40,80,0.5); border: 1px solid rgba(100,100,255,0.2); border-radius: 10px; padding: 20px; transition: all 0.3s; }
+    .dish-card:hover { border-color: #6c6cff; box-shadow: 0 5px 15px rgba(108,108,255,0.2); transform: translateY(-2px); }
+    .dish-name { font-weight: bold; font-size: 18px; color: #c0c0ff; margin-bottom: 5px; }
+    .dish-price { color: #00cc88; font-weight: bold; font-size: 22px; margin: 10px 0; }
+    .dish-desc { color: #8080cc; font-size: 14px; margin-bottom: 10px; }
+    
+    .order-item { background: rgba(30,30,60,0.5); border: 1px solid rgba(100,100,255,0.15); border-radius: 10px; padding: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .badge { padding: 5px 12px; border-radius: 15px; font-size: 12px; font-weight: bold; white-space: nowrap; }
+    .badge-pending { background: #ffeaa7; color: #d63031; }
+    .badge-unpaid { background: #fab1a0; color: #d63031; }
+    .badge-completed { background: #a8e6cf; color: #00b894; }
+    
+    .admin-section { background: rgba(30,30,60,0.5); padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid rgba(100,100,255,0.2); }
+    .admin-section h3 { color: #c0c0ff; margin-bottom: 15px; }
+    
+    .empty-state { text-align: center; padding: 40px; color: #6060aa; }
+    .message { padding: 10px; border-radius: 5px; margin: 10px 0; }
+    .message-error { background: rgba(255,71,87,0.1); color: #ff4757; border: 1px solid #ff4757; }
+    .message-success { background: rgba(0,204,136,0.1); color: #00cc88; border: 1px solid #00cc88; }
+    
+    hr { border: none; border-top: 1px solid rgba(100,100,255,0.2); margin: 20px 0; }
+    select { background: rgba(10,10,30,0.8); color: #e0e0ff; }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>🛡️ QUEDE Studio</h1>
-    <div class="subtitle">护航工作室 · 专业点单系统</div>
+    <div class="subtitle">护航工作室 · 云端点单系统</div>
 
-    <!-- ==================== 登录/注册区 ==================== -->
-    <div class="auth-area" id="authArea">
-      <div class="auth-tabs">
-        <button class="auth-tab active" id="tabLogin">🔑 登录</button>
-        <button class="auth-tab" id="tabRegister">📝 注册</button>
+    <!-- 配置区(仅首次使用) -->
+    <div class="config-box" id="configBox" style="display:none;">
+      <h3>⚙️ 首次配置</h3>
+      <div class="config-row">
+        <label>Gitee令牌:</label>
+        <input type="password" id="giteeToken" placeholder="输入你的Gitee私人令牌" style="flex:1;">
       </div>
-      <div class="auth-form active" id="loginForm">
-        <input type="text" id="loginUser" placeholder="用户名" autocomplete="username">
-        <input type="password" id="loginPass" placeholder="密码" autocomplete="current-password">
-        <button class="btn" id="btnLogin">登录</button>
+      <div class="config-row">
+        <label>仓库路径:</label>
+        <input type="text" id="repoPath" placeholder="用户名/仓库名" style="flex:1;">
       </div>
-      <div class="auth-form" id="registerForm">
-        <input type="text" id="regUser" placeholder="设置用户名">
-        <input type="password" id="regPass" placeholder="设置密码">
-        <button class="btn" id="btnRegister">提交注册申请</button>
+      <button class="btn" onclick="saveConfig()">💾 保存配置</button>
+      <div style="color:#8080cc; margin-top:10px; font-size:14px;">
+        💡 令牌获取: Gitee → 设置 → 私人令牌 → 生成新令牌(勾选user_info和projects权限)
       </div>
-      <div id="authMessage" style="margin-top: 0.8rem; font-size: 0.9rem;"></div>
     </div>
 
-    <!-- ==================== 主应用界面 ==================== -->
+    <!-- 登录/注册 -->
+    <div class="auth-box" id="authBox">
+      <div class="auth-tabs">
+        <button class="auth-tab active" onclick="switchAuth('login')">🔑 登录</button>
+        <button class="auth-tab" onclick="switchAuth('register')">📝 注册</button>
+      </div>
+      <div class="auth-form active" id="loginForm">
+        <input type="text" id="loginUser" placeholder="用户名">
+        <input type="password" id="loginPass" placeholder="密码">
+        <button class="btn" onclick="login()">登录</button>
+      </div>
+      <div class="auth-form" id="registerForm">
+        <input type="text" id="regUser" placeholder="设置用户名(至少3位)">
+        <input type="password" id="regPass" placeholder="设置密码(至少4位)">
+        <button class="btn" onclick="register()">注册</button>
+      </div>
+      <div id="authMsg"></div>
+    </div>
+
+    <!-- 主界面 -->
     <div class="main-app" id="mainApp">
       <div class="user-bar">
-        <div class="user-info">
-          <span>👤</span>
-          <span id="currentUserDisplay"></span>
-          <span id="adminBadge" style="display:none; color:#ffcc00; font-weight:700;">[管理员]</span>
+        <div>
+          👤 <span id="currentUser" style="color:#c0c0ff;"></span>
+          <span id="adminBadge" style="display:none; color:#ffd700; margin-left:10px;">[管理员]</span>
         </div>
-        <button class="btn btn-outline btn-small" id="btnLogout">退出登录</button>
+        <button class="btn btn-small" onclick="logout()">退出</button>
       </div>
 
-      <div class="tabs" id="mainTabs">
-        <button class="tab-btn active" data-panel="orderPanel">📋 点单区</button>
-        <button class="tab-btn" data-panel="cartPanel">🛒 购物车 <span id="cartCount" style="background:#ff4444; color:white; border-radius:50%; padding:0.1rem 0.5rem; font-size:0.75rem; display:none;">0</span></button>
-        <button class="tab-btn" data-panel="myOrdersPanel">📦 已下单区</button>
-        <button class="tab-btn admin-only" data-panel="adminPanel" id="tabAdmin" style="display:none;">⚙️ 后台管理</button>
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchPanel('orderPanel')">📋 点单区</button>
+        <button class="tab-btn" onclick="switchPanel('cartPanel')">🛒 购物车 <span id="cartCount" style="background:red; color:white; border-radius:50%; padding:2px 8px; font-size:12px; display:none;">0</span></button>
+        <button class="tab-btn" onclick="switchPanel('myOrdersPanel')">📦 我的订单</button>
+        <button class="tab-btn" onclick="switchPanel('adminPanel')" id="adminTab" style="display:none;">⚙️ 管理</button>
       </div>
 
       <!-- 点单区 -->
       <div class="panel active" id="orderPanel">
-        <div class="card">
-          <h3>📋 服务项目</h3>
-          <div class="dish-grid" id="dishGrid">
-            <div class="empty-state">加载中...</div>
-          </div>
-        </div>
+        <div class="dish-grid" id="dishGrid"></div>
       </div>
 
       <!-- 购物车 -->
       <div class="panel" id="cartPanel">
-        <div class="card">
-          <h3>🛒 我的购物车</h3>
-          <div id="cartItems" class="result-box">
-            <div class="empty-state">购物车是空的</div>
-          </div>
-          <div id="cartTotal" style="margin-top:1rem; font-weight:700; color:#00cc88; font-size:1.2rem;"></div>
-          <button class="btn btn-success" id="btnSubmitOrder" style="margin-top:1rem;" disabled>📤 提交订单</button>
-        </div>
+        <div id="cartItems"><div class="empty-state">购物车是空的</div></div>
+        <div style="margin-top:20px; font-size:20px; font-weight:bold; color:#00cc88;" id="cartTotal"></div>
+        <button class="btn btn-success" onclick="submitOrder()" style="margin-top:15px;" id="btnSubmit" disabled>📤 提交订单</button>
       </div>
 
-      <!-- 已下单区 -->
+      <!-- 我的订单 -->
       <div class="panel" id="myOrdersPanel">
-        <div class="card">
-          <h3>📦 我的订单</h3>
-          <div id="myOrdersList" class="result-box">
-            <div class="empty-state">暂无订单</div>
-          </div>
-        </div>
+        <div id="myOrders"><div class="empty-state">暂无订单</div></div>
       </div>
 
       <!-- 后台管理 -->
-      <div class="panel admin-only" id="adminPanel">
-        <div class="card">
-          <h3>⚙️ 后台管理</h3>
-          
-          <!-- 菜品管理 -->
-          <h4 style="color:#c0c0ff; margin-bottom:0.8rem;">➕ 添加菜品</h4>
-          <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1rem;">
-            <input type="text" id="adminDishName" placeholder="菜品名称" style="flex:1;">
-            <input type="number" id="adminDishPrice" placeholder="价格" step="0.01" style="flex:0.5;">
-            <input type="text" id="adminDishDesc" placeholder="描述(选填)" style="flex:1.5;">
-            <button class="btn btn-small" id="btnAddDish">添加</button>
+      <div class="panel" id="adminPanel">
+        <div class="admin-section">
+          <h3>➕ 添加服务</h3>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <input type="text" id="dishName" placeholder="服务名称">
+            <input type="number" id="dishPrice" placeholder="价格" step="0.01">
+            <input type="text" id="dishDesc" placeholder="描述(选填)">
+            <button class="btn" onclick="addDish()">添加</button>
           </div>
-          <div id="adminDishList" class="result-box" style="max-height:300px;"></div>
-
-          <hr>
-
-          <!-- 账户管理 -->
-          <h4 style="color:#c0c0ff; margin-bottom:0.8rem;">👥 账户审核</h4>
-          <div id="adminUserList" class="result-box" style="max-height:300px;"></div>
-
-          <hr>
-
-          <!-- 订单管理 -->
-          <h4 style="color:#c0c0ff; margin-bottom:0.8rem;">📋 所有订单</h4>
-          <div id="adminOrderList" class="result-box" style="max-height:400px;"></div>
+        </div>
+        <div class="admin-section">
+          <h3>📋 服务管理</h3>
+          <div id="adminDishes"></div>
+        </div>
+        <div class="admin-section">
+          <h3>👥 用户审核</h3>
+          <div id="adminUsers"></div>
+        </div>
+        <div class="admin-section">
+          <h3>📦 所有订单</h3>
+          <div id="adminOrders"></div>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    (function () {
-      // ==================== 配置区——请修改为你的信息 ====================
-      const GITHUB_USERNAME = 'quedehphh';
-      const REPO_NAME = 'hh';
+    // ============ Gitee API 配置 ============
+    const GITEE_API = 'https://gitee.com/api/v5';
+    let giteeToken = '972692c25a31e4d1657eccdc53d7d553';
+    let repoOwner = 'syqdsg';
+    let repoName = 'quedehh';
+    let currentUser = null;
+    let cart = [];
+    let cachedData = null;
+
+    // 从localStorage读取配置
+    function loadConfig() {
+      const config = JSON.parse(localStorage.getItem('studio_config') || '{}');
+      if (config.token && config.repo) {
+        giteeToken = config.token;
+        [repoOwner, repoName] = config.repo.split('/');
+        document.getElementById('configBox').style.display = 'none';
+        loadData();
+      } else {
+        document.getElementById('configBox').style.display = 'block';
+      }
+    }
+
+    function saveConfig() {
+      const token = document.getElementById('giteeToken').value.trim();
+      const repo = document.getElementById('repoPath').value.trim();
       
-      const ACCOUNTS_FILE = 'accounts.json';
-      const DISHES_FILE = 'dishes.json';
-      const ORDERS_FILE = 'orders.json';
+      if (!token || !repo) {
+        alert('请填写令牌和仓库路径');
+        return;
+      }
+
+      const config = { token, repo };
+      localStorage.setItem('studio_config', JSON.stringify(config));
+      giteeToken = token;
+      [repoOwner, repoName] = repo.split('/');
+      document.getElementById('configBox').style.display = 'none';
       
-      const API_RAW = `https://raw.githubusercontent.com/${GITHUB_USERNAME}/${REPO_NAME}/main`;
-      const DISPATCH_URL = `https://api.github.com/repos/${GITHUB_USERNAME}/${REPO_NAME}/actions/workflows/studio-backend.yml/dispatches`;
+      // 初始化数据文件
+      initDataFiles();
+      loadData();
+    }
 
-      // ==================== 状态 ====================
-      let githubToken = '';
-      let currentUser = null;
-      let isAdmin = false;
-      let cart = [];
-      let dishes = [];
-      let orders = [];
-      let accounts = [];
+    // ============ 数据读写 ============
+    async function apiRequest(method, endpoint, body = null) {
+      const url = `${GITEE_API}/repos/${repoOwner}/${repoName}/contents/${endpoint}`;
+      const headers = {
+        'Authorization': `token ${giteeToken}`,
+        'Content-Type': 'application/json'
+      };
 
-      // ==================== 工具函数 ====================
-      function escapeHtml(text) {
-        return String(text).replace(/[&<>"]/g, m => ({'&':'&','<':'<','>':'>','"':'"'}[m] || m));
+      const options = { method, headers };
+      if (body) options.body = JSON.stringify(body);
+
+      const response = await fetch(url, options);
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || '请求失败');
       }
+      return response.json();
+    }
 
-      function generateId() {
-        return Date.now().toString(36) + Math.random().toString(36).substring(2, 8);
+    async function readFile(filename) {
+      try {
+        const data = await apiRequest('GET', filename);
+        // 解码Base64内容
+        const content = decodeURIComponent(escape(atob(data.content)));
+        return JSON.parse(content);
+      } catch (e) {
+        console.log(`读取${filename}失败:`, e.message);
+        return null;
       }
+    }
 
-      function showMessage(elementId, text, color = '#b0b0ff') {
-        const el = document.getElementById(elementId);
-        el.innerHTML = `<span style="color:${color};">${text}</span>`;
-        setTimeout(() => { if (el.innerHTML.includes(text)) el.innerHTML = ''; }, 5000);
-      }
+    async function writeFile(filename, content, sha = null) {
+      const body = {
+        access_token: giteeToken,
+        content: btoa(unescape(encodeURIComponent(JSON.stringify(content, null, 2)))),
+        message: `更新 ${filename}`
+      };
+      if (sha) body.sha = sha;
 
-      // ==================== 数据读写 ====================
-      async function fetchFile(filename) {
-        const url = `${API_RAW}/${filename}`;
-        const response = await fetch(url, { cache: 'no-cache' });
-        if (!response.ok) {
-          if (response.status === 404) return null;
-          throw new Error(`读取失败 (${response.status})`);
-        }
-        return await response.json();
-      }
+      return apiRequest('PUT', filename, body);
+    }
 
-      async function triggerWorkflow(action, data, extraParams = {}) {
-        const body = {
-          ref: 'main',
-          inputs: {
-            action: action,
-            payload: typeof data === 'string' ? data : JSON.stringify(data)
-          }
+    async function loadData() {
+      try {
+        const [users, dishes, orders] = await Promise.all([
+          readFile('accounts.json'),
+          readFile('dishes.json'),
+          readFile('orders.json')
+        ]);
+        
+        cachedData = {
+          users: users?.users || [],
+          dishes: dishes?.dishes || [],
+          orders: orders?.orders || []
         };
-        if (extraParams.file) body.inputs.file = extraParams.file;
-        if (extraParams.id) body.inputs.item_id = extraParams.id;
-        if (extraParams.username) body.inputs.username = extraParams.username;
+      } catch (e) {
+        console.error('数据加载失败:', e);
+        showMessage('authMsg', '数据加载失败，请检查配置', '#ff4757');
+      }
+    }
 
-        const response = await fetch(DISPATCH_URL, {
-          method: 'POST',
-          headers: {
-            'Accept': 'application/vnd.github.v3+json',
-            'Authorization': `token ${githubToken}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(body)
-        });
-        if (!response.ok) throw new Error(`操作失败 (${response.status})`);
-        // 等待 Actions 执行（约3-5秒）
-        await new Promise(resolve => setTimeout(resolve, 4000));
+    async function initDataFiles() {
+      const defaultAccounts = {
+        users: [{
+          id: 'admin001',
+          username: 'admin',
+          password: 'admin123',
+          role: 'admin',
+          status: 'approved'
+        }]
+      };
+
+      const defaultDishes = {
+        dishes: [
+          { id: 'd001', name: '品牌Logo设计', price: 500, desc: '含3版修改', available: true },
+          { id: 'd002', name: '海报设计', price: 300, desc: '活动海报设计', available: true },
+          { id: 'd003', name: 'UI界面设计', price: 2000, desc: '移动端/网页端', available: true },
+          { id: 'd004', name: '品牌VI手册', price: 5000, desc: '完整VI系统', available: true }
+        ]
+      };
+
+      const defaultOrders = { orders: [] };
+
+      try {
+        await writeFile('accounts.json', defaultAccounts);
+        await writeFile('dishes.json', defaultDishes);
+        await writeFile('orders.json', defaultOrders);
+      } catch (e) {
+        console.log('初始化文件失败(可能已存在):', e.message);
+      }
+    }
+
+    function generateId() {
+      return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+    }
+
+    // ============ UI 辅助 ============
+    function showMessage(id, text, color) {
+      const el = document.getElementById(id);
+      el.innerHTML = `<div class="message" style="color:${color}; border-color:${color};">${text}</div>`;
+      setTimeout(() => el.innerHTML = '', 3000);
+    }
+
+    // ============ 认证 ============
+    function switchAuth(tab) {
+      document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+      event.target.classList.add('active');
+      document.getElementById(tab === 'login' ? 'loginForm' : 'registerForm').classList.add('active');
+    }
+
+    async function login() {
+      const username = document.getElementById('loginUser').value.trim();
+      const password = document.getElementById('loginPass').value.trim();
+
+      if (!username || !password) {
+        showMessage('authMsg', '请填写用户名和密码', '#ff4757');
+        return;
       }
 
-      async function loadAllData() {
-        try {
-          const [accData, dishData, orderData] = await Promise.all([
-            fetchFile(ACCOUNTS_FILE),
-            fetchFile(DISHES_FILE),
-            fetchFile(ORDERS_FILE)
-          ]);
-          accounts = accData?.users || [];
-          dishes = dishData?.dishes || [];
-          orders = orderData?.orders || [];
-        } catch (e) {
-          console.error('数据加载失败:', e);
-        }
+      if (!cachedData) await loadData();
+      
+      const user = cachedData.users.find(u => u.username === username);
+      if (!user) {
+        showMessage('authMsg', '用户不存在', '#ff4757');
+        return;
+      }
+      if (user.status === 'pending') {
+        showMessage('authMsg', '账户未审核，请等待管理员审核', '#ffa500');
+        return;
+      }
+      if (user.password !== password) {
+        showMessage('authMsg', '密码错误', '#ff4757');
+        return;
       }
 
-      // ==================== 认证 ====================
-      document.getElementById('tabLogin').addEventListener('click', () => switchAuthTab('login'));
-      document.getElementById('tabRegister').addEventListener('click', () => switchAuthTab('register'));
+      loginSuccess(user);
+    }
 
-      function switchAuthTab(tab) {
-        document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
-        document.getElementById('tabRegister').classList.toggle('active', tab === 'register');
-        document.getElementById('loginForm').classList.toggle('active', tab === 'login');
-        document.getElementById('registerForm').classList.toggle('active', tab === 'register');
+    async function register() {
+      const username = document.getElementById('regUser').value.trim();
+      const password = document.getElementById('regPass').value.trim();
+
+      if (!username || !password) {
+        showMessage('authMsg', '请填写用户名和密码', '#ff4757');
+        return;
+      }
+      if (username.length < 3) {
+        showMessage('authMsg', '用户名至少3个字符', '#ff4757');
+        return;
+      }
+      if (password.length < 4) {
+        showMessage('authMsg', '密码至少4个字符', '#ff4757');
+        return;
       }
 
-      document.getElementById('btnLogin').addEventListener('click', async () => {
-        const username = document.getElementById('loginUser').value.trim();
-        const password = document.getElementById('loginPass').value.trim();
-        if (!username || !password) return showMessage('authMessage', '请填写用户名和密码', '#ff6666');
+      if (!cachedData) await loadData();
+      
+      if (cachedData.users.find(u => u.username === username)) {
+        showMessage('authMsg', '用户名已存在', '#ff4757');
+        return;
+      }
 
-        await loadAllData();
-        const user = accounts.find(u => u.username === username);
-        if (!user) return showMessage('authMessage', '用户不存在', '#ff6666');
-        if (user.status === 'pending') return showMessage('authMessage', '账户尚未通过审核，请等待管理员审核', '#ffcc00');
-        if (user.password !== password) return showMessage('authMessage', '密码错误', '#ff6666');
-
-        loginSuccess(user);
+      cachedData.users.push({
+        id: generateId(),
+        username,
+        password,
+        role: 'user',
+        status: 'pending'
       });
 
-      document.getElementById('btnRegister').addEventListener('click', async () => {
-        const username = document.getElementById('regUser').value.trim();
-        const password = document.getElementById('regPass').value.trim();
-        if (!username || !password) return showMessage('authMessage', '请填写用户名和密码', '#ff6666');
-        if (username.length < 3) return showMessage('authMessage', '用户名至少3个字符', '#ff6666');
-        if (password.length < 4) return showMessage('authMessage', '密码至少4个字符', '#ff6666');
+      try {
+        const fileData = await readFile('accounts.json');
+        await writeFile('accounts.json', { users: cachedData.users }, fileData?.sha);
+        showMessage('authMsg', '✅ 注册成功，请等待审核', '#00cc88');
+        document.getElementById('regUser').value = '';
+        document.getElementById('regPass').value = '';
+      } catch (e) {
+        showMessage('authMsg', '注册失败: ' + e.message, '#ff4757');
+      }
+    }
 
-        if (!githubToken) {
-          // 注册不需要token，直接触发workflow
-          // 但首次使用需要提示管理员配置
-        }
+    function loginSuccess(user) {
+      currentUser = user;
+      document.getElementById('authBox').style.display = 'none';
+      document.getElementById('mainApp').classList.add('active');
+      document.getElementById('currentUser').textContent = user.username;
+      
+      if (user.role === 'admin') {
+        document.getElementById('adminBadge').style.display = 'inline';
+        document.getElementById('adminTab').style.display = 'inline-block';
+      }
+      
+      refreshUI();
+    }
 
-        await loadAllData();
-        if (accounts.find(u => u.username === username)) {
-          return showMessage('authMessage', '用户名已存在', '#ff6666');
-        }
+    function logout() {
+      currentUser = null;
+      cart = [];
+      document.getElementById('authBox').style.display = 'block';
+      document.getElementById('mainApp').classList.remove('active');
+      document.getElementById('adminBadge').style.display = 'none';
+      document.getElementById('adminTab').style.display = 'none';
+    }
 
-        try {
-          const newUser = { id: generateId(), username, password, status: 'pending', role: 'user' };
-          await triggerWorkflow('add_user', newUser, { file: ACCOUNTS_FILE });
-          showMessage('authMessage', '注册申请已提交，请等待管理员审核', '#00cc88');
-          document.getElementById('regUser').value = '';
-          document.getElementById('regPass').value = '';
-        } catch (e) {
-          showMessage('authMessage', '注册失败: ' + e.message, '#ff6666');
-        }
-      });
+    // ============ 界面切换 ============
+    function switchPanel(panelId) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      event.target.classList.add('active');
+      document.getElementById(panelId).classList.add('active');
+      refreshPanel(panelId);
+    }
 
-      function loginSuccess(user) {
-        currentUser = user;
-        isAdmin = user.role === 'admin';
-        document.getElementById('authArea').style.display = 'none';
-        document.getElementById('mainApp').classList.add('active');
-        document.getElementById('currentUserDisplay').textContent = user.username;
-        document.getElementById('adminBadge').style.display = isAdmin ? 'inline' : 'none';
-        
-        // 显示管理员tab
-        if (isAdmin) {
-          document.getElementById('tabAdmin').style.display = 'inline-block';
-          // 首次登录管理员需要输入token
-          if (!githubToken) {
-            const token = prompt('管理员首次使用，请输入GitHub Token（仅存储在当前浏览器会话中）：');
-            if (token) {
-              githubToken = token.trim();
-              sessionStorage.setItem('studio_gh_token', githubToken);
-            }
-          }
-        }
-        
-        refreshAllUI();
+    function refreshPanel(panelId) {
+      switch(panelId) {
+        case 'orderPanel': renderDishes(); break;
+        case 'cartPanel': renderCart(); break;
+        case 'myOrdersPanel': renderMyOrders(); break;
+        case 'adminPanel': renderAdmin(); break;
+      }
+    }
+
+    function refreshUI() {
+      renderDishes();
+      renderCart();
+      renderMyOrders();
+      if (currentUser?.role === 'admin') renderAdmin();
+    }
+
+    // ============ 点单区 ============
+    function renderDishes() {
+      if (!cachedData) return;
+      const available = cachedData.dishes.filter(d => d.available !== false);
+      const grid = document.getElementById('dishGrid');
+      
+      if (available.length === 0) {
+        grid.innerHTML = '<div class="empty-state">暂无可用服务</div>';
+        return;
       }
 
-      document.getElementById('btnLogout').addEventListener('click', () => {
-        currentUser = null;
-        isAdmin = false;
+      grid.innerHTML = available.map(d => `
+        <div class="dish-card">
+          <div class="dish-name">${d.name}</div>
+          <div class="dish-price">¥${d.price.toFixed(2)}</div>
+          ${d.desc ? `<div class="dish-desc">${d.desc}</div>` : ''}
+          <button class="btn btn-small" onclick="addToCart('${d.id}')">➕ 加入购物车</button>
+        </div>
+      `).join('');
+    }
+
+    function addToCart(dishId) {
+      const dish = cachedData.dishes.find(d => d.id === dishId);
+      if (!dish) return;
+
+      const exist = cart.find(c => c.dishId === dishId);
+      if (exist) {
+        exist.quantity++;
+      } else {
+        cart.push({ dishId, name: dish.name, price: dish.price, quantity: 1 });
+      }
+      updateCartCount();
+      alert(`已添加：${dish.name}`);
+    }
+
+    function updateCartCount() {
+      const count = cart.reduce((sum, c) => sum + c.quantity, 0);
+      const badge = document.getElementById('cartCount');
+      badge.textContent = count;
+      badge.style.display = count > 0 ? 'inline-block' : 'none';
+    }
+
+    // ============ 购物车 ============
+    function renderCart() {
+      const container = document.getElementById('cartItems');
+      const totalEl = document.getElementById('cartTotal');
+      const submitBtn = document.getElementById('btnSubmit');
+
+      if (cart.length === 0) {
+        container.innerHTML = '<div class="empty-state">购物车是空的</div>';
+        totalEl.innerHTML = '';
+        submitBtn.disabled = true;
+        return;
+      }
+
+      const total = cart.reduce((s, c) => s + c.price * c.quantity, 0);
+      container.innerHTML = cart.map((c, i) => `
+        <div class="order-item">
+          <div>
+            <strong>${c.name}</strong>
+            <div style="color:#8080cc;">¥${c.price.toFixed(2)} x ${c.quantity}</div>
+          </div>
+          <div>
+            <button class="btn btn-small" onclick="changeQty(${i}, -1)">➖</button>
+            <span style="margin:0 10px;">${c.quantity}</span>
+            <button class="btn btn-small" onclick="changeQty(${i}, 1)">➕</button>
+            <button class="btn btn-danger btn-small" onclick="removeItem(${i})">删除</button>
+          </div>
+        </div>
+      `).join('');
+      totalEl.innerHTML = `合计：¥${total.toFixed(2)}`;
+      submitBtn.disabled = false;
+    }
+
+    function changeQty(index, delta) {
+      cart[index].quantity += delta;
+      if (cart[index].quantity <= 0) cart.splice(index, 1);
+      updateCartCount();
+      renderCart();
+    }
+
+    function removeItem(index) {
+      cart.splice(index, 1);
+      updateCartCount();
+      renderCart();
+    }
+
+    async function submitOrder() {
+      if (!currentUser || cart.length === 0) return;
+
+      const order = {
+        id: generateId(),
+        userId: currentUser.id,
+        username: currentUser.username,
+        items: [...cart],
+        total: cart.reduce((s, c) => s + c.price * c.quantity, 0),
+        status: '已下单',
+        createdAt: new Date().toISOString()
+      };
+
+      cachedData.orders.push(order);
+
+      try {
+        const fileData = await readFile('orders.json');
+        await writeFile('orders.json', { orders: cachedData.orders }, fileData?.sha);
         cart = [];
-        document.getElementById('authArea').style.display = 'block';
-        document.getElementById('mainApp').classList.remove('active');
-        document.getElementById('loginUser').value = '';
-        document.getElementById('loginPass').value = '';
-      });
+        updateCartCount();
+        refreshUI();
+        alert('✅ 订单已提交！');
+        switchPanel('myOrdersPanel');
+        document.querySelectorAll('.tab-btn')[2].classList.add('active');
+      } catch (e) {
+        alert('提交失败: ' + e.message);
+      }
+    }
 
-      // ==================== 主界面切换 ====================
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const panelId = btn.dataset.panel;
-          if (!panelId) return;
-          document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-          document.getElementById(panelId).classList.add('active');
-          refreshCurrentPanel(panelId);
-        });
-      });
+    // ============ 我的订单 ============
+    function renderMyOrders() {
+      if (!currentUser || !cachedData) return;
+      
+      const myOrders = cachedData.orders
+        .filter(o => o.userId === currentUser.id)
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-      function refreshCurrentPanel(panelId) {
-        switch (panelId) {
-          case 'orderPanel': renderDishGrid(); break;
-          case 'cartPanel': renderCart(); break;
-          case 'myOrdersPanel': renderMyOrders(); break;
-          case 'adminPanel': refreshAdminPanel(); break;
-        }
+      const container = document.getElementById('myOrders');
+      if (myOrders.length === 0) {
+        container.innerHTML = '<div class="empty-state">暂无订单</div>';
+        return;
       }
 
-      async function refreshAllUI() {
-        await loadAllData();
-        renderDishGrid();
-        renderCart();
-        renderMyOrders();
-        if (isAdmin) refreshAdminPanel();
-      }
-
-      // ==================== 点单区 ====================
-      function renderDishGrid() {
-        const grid = document.getElementById('dishGrid');
-        const availableDishes = dishes.filter(d => d.available !== false);
-        if (availableDishes.length === 0) {
-          grid.innerHTML = '<div class="empty-state">暂无可用服务</div>';
-          return;
-        }
-        grid.innerHTML = availableDishes.map(d => `
-          <div class="dish-item">
-            <div class="dish-name">${escapeHtml(d.name)}</div>
-            <div class="dish-price">¥${d.price.toFixed(2)}</div>
-            ${d.desc ? `<div class="dish-desc">${escapeHtml(d.desc)}</div>` : ''}
-            <button class="btn btn-small" onclick="window.addToCart('${d.id}')">➕ 加入购物车</button>
-          </div>
-        `).join('');
-      }
-
-      window.addToCart = function (dishId) {
-        const dish = dishes.find(d => d.id === dishId);
-        if (!dish) return;
-        const existing = cart.find(c => c.dishId === dishId);
-        if (existing) {
-          existing.quantity++;
-        } else {
-          cart.push({ dishId: dishId, name: dish.name, price: dish.price, quantity: 1 });
-        }
-        updateCartBadge();
-        showMessage('authMessage', `已添加 ${dish.name} 到购物车`, '#00cc88');
-      };
-
-      function updateCartBadge() {
-        const count = cart.reduce((sum, c) => sum + c.quantity, 0);
-        const badge = document.getElementById('cartCount');
-        badge.textContent = count;
-        badge.style.display = count > 0 ? 'inline-block' : 'none';
-      }
-
-      // ==================== 购物车 ====================
-      function renderCart() {
-        const container = document.getElementById('cartItems');
-        const totalEl = document.getElementById('cartTotal');
-        const submitBtn = document.getElementById('btnSubmitOrder');
-
-        if (cart.length === 0) {
-          container.innerHTML = '<div class="empty-state">购物车是空的</div>';
-          totalEl.innerHTML = '';
-          submitBtn.disabled = true;
-          return;
-        }
-
-        const total = cart.reduce((sum, c) => sum + c.price * c.quantity, 0);
-        container.innerHTML = cart.map((c, index) => `
+      container.innerHTML = myOrders.map(o => {
+        const badgeClass = o.status === '已下单' ? 'badge-pending' : 
+                          o.status === '未支付' ? 'badge-unpaid' : 'badge-completed';
+        const items = o.items.map(i => `${i.name} x${i.quantity}`).join(', ');
+        return `
           <div class="order-item">
-            <div class="order-info">
-              <div class="order-name">${escapeHtml(c.name)}</div>
-              <div class="order-meta">¥${c.price.toFixed(2)} x ${c.quantity}</div>
+            <div>
+              <strong>${items}</strong>
+              <div style="color:#8080cc;">¥${o.total.toFixed(2)} · ${new Date(o.createdAt).toLocaleString()}</div>
+            </div>
+            <span class="badge ${badgeClass}">${o.status}</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // ============ 后台管理 ============
+    function renderAdmin() {
+      if (!currentUser || currentUser.role !== 'admin' || !cachedData) return;
+      
+      // 菜品管理
+      document.getElementById('adminDishes').innerHTML = cachedData.dishes.map(d => `
+        <div class="order-item">
+          <div>
+            <strong>${d.name}</strong> - ¥${d.price.toFixed(2)}
+            ${d.available === false ? '<span style="color:#ff4757;">[已下架]</span>' : ''}
+          </div>
+          <div>
+            <button class="btn btn-small" onclick="toggleDish('${d.id}')">
+              ${d.available !== false ? '下架' : '上架'}
+            </button>
+            <button class="btn btn-danger btn-small" onclick="deleteDish('${d.id}')">删除</button>
+          </div>
+        </div>
+      `).join('');
+
+      // 用户审核
+      document.getElementById('adminUsers').innerHTML = cachedData.users.map(u => `
+        <div class="order-item">
+          <div>
+            <strong>${u.username}</strong> 
+            <span style="color:#8080cc;">[${u.role}] - ${u.status}</span>
+          </div>
+          <div>
+            ${u.status === 'pending' ? 
+              `<button class="btn btn-success btn-small" onclick="approveUser('${u.id}')">审核通过</button>` : ''}
+            ${u.role !== 'admin' ? 
+              `<button class="btn btn-danger btn-small" onclick="deleteUser('${u.id}')">删除</button>` : ''}
+          </div>
+        </div>
+      `).join('');
+
+      // 订单管理
+      const sorted = [...cachedData.orders].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      document.getElementById('adminOrders').innerHTML = sorted.map(o => {
+        const items = o.items.map(i => `${i.name} x${i.quantity}`).join(', ');
+        return `
+          <div class="order-item">
+            <div>
+              <strong>${o.username}:</strong> ${items}
+              <div style="color:#8080cc;">¥${o.total.toFixed(2)} · ${new Date(o.createdAt).toLocaleString()}</div>
             </div>
             <div>
-              <button class="btn btn-outline btn-small" onclick="window.changeQty(${index}, -1)">➖</button>
-              <span style="margin:0 0.5rem;">${c.quantity}</span>
-              <button class="btn btn-outline btn-small" onclick="window.changeQty(${index}, 1)">➕</button>
-              <button class="btn btn-danger btn-small" onclick="window.removeFromCart(${index})">🗑</button>
+              <select onchange="updateOrderStatus('${o.id}', this.value)" style="padding:5px;">
+                <option value="">修改状态</option>
+                <option value="已下单" ${o.status === '已下单' ? 'selected' : ''}>已下单</option>
+                <option value="未支付" ${o.status === '未支付' ? 'selected' : ''}>未支付</option>
+                <option value="已完成" ${o.status === '已完成' ? 'selected' : ''}>已完成</option>
+              </select>
             </div>
           </div>
-        `).join('');
-        totalEl.innerHTML = `合计：<span style="color:#00cc88;">¥${total.toFixed(2)}</span>`;
-        submitBtn.disabled = false;
+        `;
+      }).join('');
+    }
+
+    async function addDish() {
+      const name = document.getElementById('dishName').value.trim();
+      const price = parseFloat(document.getElementById('dishPrice').value);
+      const desc = document.getElementById('dishDesc').value.trim();
+
+      if (!name || isNaN(price)) {
+        alert('请填写名称和价格');
+        return;
       }
 
-      window.changeQty = function (index, delta) {
-        cart[index].quantity += delta;
-        if (cart[index].quantity <= 0) cart.splice(index, 1);
-        updateCartBadge();
-        renderCart();
-      };
-
-      window.removeFromCart = function (index) {
-        cart.splice(index, 1);
-        updateCartBadge();
-        renderCart();
-      };
-
-      document.getElementById('btnSubmitOrder').addEventListener('click', async () => {
-        if (!currentUser) return alert('请先登录');
-        if (cart.length === 0) return alert('购物车为空');
-        if (!githubToken && !isAdmin) return alert('系统暂不可用，请联系管理员配置');
-
-        try {
-          const newOrder = {
-            id: generateId(),
-            userId: currentUser.id,
-            username: currentUser.username,
-            items: [...cart],
-            total: cart.reduce((s, c) => s + c.price * c.quantity, 0),
-            status: '已下单',
-            createdAt: new Date().toISOString()
-          };
-
-          await triggerWorkflow('add_order', newOrder, { file: ORDERS_FILE });
-          cart = [];
-          updateCartBadge();
-          await refreshAllUI();
-          showMessage('authMessage', '订单已提交！', '#00cc88');
-          // 切换到已下单区
-          document.querySelector('[data-panel="myOrdersPanel"]').click();
-        } catch (e) {
-          alert('提交失败: ' + e.message);
-        }
+      cachedData.dishes.push({
+        id: generateId(),
+        name,
+        price,
+        desc,
+        available: true
       });
 
-      // ==================== 已下单区 ====================
-      function renderMyOrders() {
-        const container = document.getElementById('myOrdersList');
-        if (!currentUser) return;
-        
-        const myOrders = orders
-          .filter(o => o.userId === currentUser.id)
-          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
-        if (myOrders.length === 0) {
-          container.innerHTML = '<div class="empty-state">暂无订单</div>';
-          return;
-        }
-
-        container.innerHTML = myOrders.map(o => {
-          const statusBadge = {
-            '已下单': 'badge-pending',
-            '未支付': 'badge-unpaid',
-            '已完成': 'badge-completed'
-          }[o.status] || 'badge-pending';
-
-          const itemsHtml = o.items.map(i => `${escapeHtml(i.name)} x${i.quantity}`).join(', ');
-
-          return `
-            <div class="order-item">
-              <div class="order-info">
-                <div class="order-name">${itemsHtml}</div>
-                <div class="order-meta">¥${o.total.toFixed(2)} · ${new Date(o.createdAt).toLocaleString('zh-CN')}</div>
-              </div>
-              <span class="badge ${statusBadge}">${o.status}</span>
-            </div>
-          `;
-        }).join('');
+      try {
+        const fileData = await readFile('dishes.json');
+        await writeFile('dishes.json', { dishes: cachedData.dishes }, fileData?.sha);
+        document.getElementById('dishName').value = '';
+        document.getElementById('dishPrice').value = '';
+        document.getElementById('dishDesc').value = '';
+        refreshUI();
+      } catch (e) {
+        alert('添加失败: ' + e.message);
       }
+    }
 
-      // ==================== 后台管理 ====================
-      async function refreshAdminPanel() {
-        if (!isAdmin) return;
-        await loadAllData();
-        renderAdminDishes();
-        renderAdminUsers();
-        renderAdminOrders();
-      }
-
-      function renderAdminDishes() {
-        const container = document.getElementById('adminDishList');
-        container.innerHTML = dishes.map(d => `
-          <div class="order-item">
-            <div class="order-info">
-              <div class="order-name">${escapeHtml(d.name)} - ¥${d.price.toFixed(2)}</div>
-              <div class="order-meta">${escapeHtml(d.desc || '')} ${d.available === false ? '[已下架]' : ''}</div>
-            </div>
-            <div>
-              <button class="btn btn-outline btn-small" onclick="window.toggleDish('${d.id}')">${d.available !== false ? '下架' : '上架'}</button>
-              <button class="btn btn-danger btn-small" onclick="window.deleteDish('${d.id}')">删除</button>
-            </div>
-          </div>
-        `).join('');
-      }
-
-      document.getElementById('btnAddDish').addEventListener('click', async () => {
-        const name = document.getElementById('adminDishName').value.trim();
-        const priceStr = document.getElementById('adminDishPrice').value;
-        const desc = document.getElementById('adminDishDesc').value.trim();
-        if (!name || !priceStr) return alert('请填写名称和价格');
-
-        try {
-          const newDish = {
-            id: generateId(),
-            name,
-            price: parseFloat(priceStr),
-            desc,
-            available: true
-          };
-          await triggerWorkflow('add_dish', newDish, { file: DISHES_FILE });
-          document.getElementById('adminDishName').value = '';
-          document.getElementById('adminDishPrice').value = '';
-          document.getElementById('adminDishDesc').value = '';
-          await refreshAllUI();
-        } catch (e) { alert('添加失败: ' + e.message); }
-      });
-
-      window.toggleDish = async function (id) {
-        const dish = dishes.find(d => d.id === id);
-        if (!dish) return;
+    async function toggleDish(id) {
+      const dish = cachedData.dishes.find(d => d.id === id);
+      if (dish) {
         dish.available = dish.available === false ? true : false;
         try {
-          await triggerWorkflow('update_all', { dishes }, { file: DISHES_FILE });
-          await refreshAllUI();
-        } catch (e) { alert('操作失败: ' + e.message); }
-      };
-
-      window.deleteDish = async function (id) {
-        if (!confirm('确定删除该菜品？')) return;
-        try {
-          await triggerWorkflow('delete_item', {}, { file: DISHES_FILE, id });
-          await refreshAllUI();
-        } catch (e) { alert('删除失败: ' + e.message); }
-      };
-
-      function renderAdminUsers() {
-        const container = document.getElementById('adminUserList');
-        container.innerHTML = accounts.map(a => `
-          <div class="order-item">
-            <div class="order-info">
-              <div class="order-name">${escapeHtml(a.username)} <span style="font-size:0.8rem; color:#8080cc;">(${a.role})</span></div>
-              <div class="order-meta">状态: ${a.status}</div>
-            </div>
-            <div>
-              ${a.status === 'pending' ? `<button class="btn btn-success btn-small" onclick="window.approveUser('${a.id}')">审核通过</button>` : ''}
-              <button class="btn btn-danger btn-small" onclick="window.deleteUser('${a.id}')">删除</button>
-            </div>
-          </div>
-        `).join('');
+          const fileData = await readFile('dishes.json');
+          await writeFile('dishes.json', { dishes: cachedData.dishes }, fileData?.sha);
+          refreshUI();
+        } catch (e) {
+          alert('操作失败: ' + e.message);
+        }
       }
+    }
 
-      window.approveUser = async function (id) {
-        const user = accounts.find(a => a.id === id);
-        if (!user) return;
+    async function deleteDish(id) {
+      if (!confirm('确定删除？')) return;
+      cachedData.dishes = cachedData.dishes.filter(d => d.id !== id);
+      try {
+        const fileData = await readFile('dishes.json');
+        await writeFile('dishes.json', { dishes: cachedData.dishes }, fileData?.sha);
+        refreshUI();
+      } catch (e) {
+        alert('删除失败: ' + e.message);
+      }
+    }
+
+    async function approveUser(id) {
+      const user = cachedData.users.find(u => u.id === id);
+      if (user) {
         user.status = 'approved';
         try {
-          await triggerWorkflow('update_all', { users: accounts }, { file: ACCOUNTS_FILE });
-          await refreshAllUI();
-        } catch (e) { alert('操作失败: ' + e.message); }
-      };
-
-      window.deleteUser = async function (id) {
-        if (!confirm('确定删除该用户？')) return;
-        try {
-          await triggerWorkflow('delete_item', {}, { file: ACCOUNTS_FILE, id });
-          await refreshAllUI();
-        } catch (e) { alert('删除失败: ' + e.message); }
-      };
-
-      function renderAdminOrders() {
-        const container = document.getElementById('adminOrderList');
-        const sorted = [...orders].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        container.innerHTML = sorted.map(o => {
-          const itemsHtml = o.items.map(i => `${escapeHtml(i.name)} x${i.quantity}`).join(', ');
-          return `
-            <div class="order-item">
-              <div class="order-info">
-                <div class="order-name">${escapeHtml(o.username)}: ${itemsHtml}</div>
-                <div class="order-meta">¥${o.total.toFixed(2)} · ${new Date(o.createdAt).toLocaleString('zh-CN')}</div>
-              </div>
-              <div style="display:flex; gap:0.5rem; align-items:center;">
-                <span class="badge badge-${o.status === '已下单' ? 'pending' : o.status === '未支付' ? 'unpaid' : 'completed'}">${o.status}</span>
-                <select onchange="window.updateOrderStatus('${o.id}', this.value)" style="padding:0.2rem; font-size:0.8rem;">
-                  <option value="">修改</option>
-                  <option value="未支付">未支付</option>
-                  <option value="已完成">已完成</option>
-                </select>
-              </div>
-            </div>
-          `;
-        }).join('');
+          const fileData = await readFile('accounts.json');
+          await writeFile('accounts.json', { users: cachedData.users }, fileData?.sha);
+          refreshUI();
+        } catch (e) {
+          alert('操作失败: ' + e.message);
+        }
       }
+    }
 
-      window.updateOrderStatus = async function (id, newStatus) {
-        if (!newStatus) return;
-        const order = orders.find(o => o.id === id);
-        if (!order) return;
-        order.status = newStatus;
-        try {
-          await triggerWorkflow('update_all', { orders }, { file: ORDERS_FILE });
-          await refreshAllUI();
-        } catch (e) { alert('更新失败: ' + e.message); }
-      };
-
-      // ==================== 初始化 ====================
-      async function init() {
-        // 恢复Token
-        const savedToken = sessionStorage.getItem('studio_gh_token');
-        if (savedToken) githubToken = savedToken;
-
-        await loadAllData();
-        
-        // 检查是否有已登录的管理员（token有效）
-        // 简单处理：刷新页面需要重新登录
+    async function deleteUser(id) {
+      if (!confirm('确定删除？')) return;
+      cachedData.users = cachedData.users.filter(u => u.id !== id);
+      try {
+        const fileData = await readFile('accounts.json');
+        await writeFile('accounts.json', { users: cachedData.users }, fileData?.sha);
+        refreshUI();
+      } catch (e) {
+        alert('删除失败: ' + e.message);
       }
+    }
 
-      init();
-    })();
+    async function updateOrderStatus(id, status) {
+      if (!status) return;
+      const order = cachedData.orders.find(o => o.id === id);
+      if (order) {
+        order.status = status;
+        try {
+          const fileData = await readFile('orders.json');
+          await writeFile('orders.json', { orders: cachedData.orders }, fileData?.sha);
+          refreshUI();
+        } catch (e) {
+          alert('更新失败: ' + e.message);
+        }
+      }
+    }
+
+    // ============ 初始化 ============
+    loadConfig();
+    // 如果没有配置，5秒后检查
+    setTimeout(() => {
+      if (!giteeToken) {
+        document.getElementById('configBox').style.display = 'block';
+        document.getElementById('authBox').style.display = 'none';
+      }
+    }, 1000);
   </script>
 </body>
 </html>
