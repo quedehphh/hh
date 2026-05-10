@@ -1,0 +1,101 @@
+name: Studio 后端操作
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: '操作类型 (add_user / add_dish / add_order / update_all / delete_item)'
+        required: true
+        type: string
+      payload:
+        description: 'JSON 数据'
+        required: false
+        type: string
+      file:
+        description: '目标文件 (accounts.json / dishes.json / orders.json)'
+        required: true
+        type: string
+      item_id:
+        description: '要删除的项目ID'
+        required: false
+        type: string
+      username:
+        description: '用户名'
+        required: false
+        type: string
+
+jobs:
+  process:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+
+      - name: 处理数据
+        run: |
+          ACTION="${{ github.event.inputs.action }}"
+          PAYLOAD='${{ github.event.inputs.payload }}'
+          FILE="${{ github.event.inputs.file }}"
+          ITEM_ID="${{ github.event.inputs.item_id }}"
+          USERNAME="${{ github.event.inputs.username }}"
+
+          echo "操作: $ACTION → $FILE"
+
+          # 确保文件存在
+          declare -A INIT_DATA
+          INIT_DATA["accounts.json"]='{"users":[]}'
+          INIT_DATA["dishes.json"]='{"dishes":[]}'
+          INIT_DATA["orders.json"]='{"orders":[]}'
+
+          if [ ! -f "$FILE" ]; then
+            echo "${INIT_DATA[$FILE]}" > "$FILE"
+            echo "✅ 创建新文件: $FILE"
+          fi
+
+          python3 << EOF
+          import json, sys
+
+          with open('${FILE}', 'r', encoding='utf-8') as f:
+              data = json.load(f)
+
+          action = '${ACTION}'
+          payload_str = '''${PAYLOAD}'''
+          item_id = '${ITEM_ID}'
+          username = '${USERNAME}'
+
+          # 根据文件类型确定数据键
+          file_key_map = {
+              'accounts.json': 'users',
+              'dishes.json': 'dishes',
+              'orders.json': 'orders'
+          }
+          key = file_key_map.get('${FILE}', 'items')
+
+          if action == 'add_user' or action == 'add_dish' or action == 'add_order':
+              new_item = json.loads(payload_str)
+              data[key].append(new_item)
+              print(f"✅ 已添加: {new_item.get('name') or new_item.get('username') or new_item.get('id')}")
+
+          elif action == 'update_all':
+              new_data = json.loads(payload_str)
+              data[key] = new_data.get(key, [])
+              print(f"✅ 已全量更新，共 {len(data[key])} 条")
+
+          elif action == 'delete_item':
+              before = len(data[key])
+              data[key] = [item for item in data[key] if item.get('id') != item_id]
+              print(f"✅ 已删除，从 {before} 减至 {len(data[key])} 条")
+
+          with open('${FILE}', 'w', encoding='utf-8') as f:
+              json.dump(data, f, ensure_ascii=False, indent=2)
+          EOF
+
+      - name: 提交更改
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add ${{ github.event.inputs.file }}
+          git diff --staged --quiet || git commit -m "📝 ${{ github.event.inputs.action }} - 数据更新"
+          git push
