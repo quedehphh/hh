@@ -12,11 +12,6 @@
     h1 { text-align: center; color: #c0c0ff; margin-bottom: 10px; font-size: 2.2em; }
     .subtitle { text-align: center; color: #8080cc; margin-bottom: 30px; }
     
-    .config-box { background: rgba(30,30,60,0.8); padding: 20px; border-radius: 10px; margin-bottom: 20px; border: 1px solid rgba(100,100,255,0.3); }
-    .config-box h3 { color: #c0c0ff; margin-bottom: 15px; }
-    .config-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 10px; }
-    .config-row label { min-width: 80px; color: #b0b0ff; }
-    
     input, select { padding: 10px 15px; background: rgba(10,10,30,0.8); border: 1px solid rgba(100,100,255,0.3); border-radius: 5px; font-size: 14px; color: #e0e0ff; outline: none; }
     input:focus { border-color: #6c6cff; box-shadow: 0 0 10px rgba(108,108,255,0.3); }
     input::placeholder { color: #6060aa; }
@@ -76,8 +71,6 @@
     <h1>🛡️ QUEDE Studio</h1>
     <div class="subtitle">护航工作室 · 云端点单系统</div>
 
-    
-
     <!-- 登录/注册 -->
     <div class="auth-box" id="authBox">
       <div class="auth-tabs">
@@ -134,9 +127,9 @@
       <!-- 后台管理 -->
       <div class="panel" id="adminPanel">
         <div class="admin-section">
-          <h3>➕ 添加单子</h3>
+          <h3>➕ 添加服务</h3>
           <div style="display:flex; gap:10px; flex-wrap:wrap;">
-            <input type="text" id="dishName" placeholder="单子名称">
+            <input type="text" id="dishName" placeholder="服务名称">
             <input type="number" id="dishPrice" placeholder="价格" step="0.01">
             <input type="text" id="dishDesc" placeholder="描述(选填)">
             <button class="btn" onclick="addDish()">添加</button>
@@ -159,31 +152,23 @@
   </div>
 
   <script>
-    // ============ Gitee API 配置 ============
+    // ============ 配置区 - 改成你自己的信息 ============
+    const GITEE_TOKEN = '4a115efe6c57c0b7947746993a759689';
+    const REPO_OWNER = 'syqdsg';
+    const REPO_NAME = 'quedehh';
+    
     const GITEE_API = 'https://gitee.com/api/v5';
-    let giteeToken = '4a115efe6c57c0b7947746993a759689';
-    let repoOwner = 'syqdsg';
-    let repoName = 'quedehh';
+    
+    // ============ 全局状态 ============
     let currentUser = null;
     let cart = [];
-    let cachedData = null;
-
-      const config = { token, repo };
-      localStorage.setItem('studio_config', JSON.stringify(config));
-      giteeToken = token;
-      [repoOwner, repoName] = repo.split('/');
-      document.getElementById('configBox').style.display = 'none';
-      
-      // 初始化数据文件
-      initDataFiles();
-      loadData();
-    }
+    let cachedData = { users: [], dishes: [], orders: [] };
 
     // ============ 数据读写 ============
-    async function apiRequest(method, endpoint, body = null) {
-      const url = `${GITEE_API}/repos/${repoOwner}/${repoName}/contents/${endpoint}`;
+    async function apiRequest(method, path, body = null) {
+      const url = `${GITEE_API}/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`;
       const headers = {
-        'Authorization': `token ${giteeToken}`,
+        'Authorization': `token ${GITEE_TOKEN}`,
         'Content-Type': 'application/json'
       };
 
@@ -192,8 +177,8 @@
 
       const response = await fetch(url, options);
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || '请求失败');
+        const error = await response.json().catch(() => ({}));
+        throw new Error(error.message || `请求失败 (${response.status})`);
       }
       return response.json();
     }
@@ -201,73 +186,83 @@
     async function readFile(filename) {
       try {
         const data = await apiRequest('GET', filename);
-        // 解码Base64内容
         const content = decodeURIComponent(escape(atob(data.content)));
-        return JSON.parse(content);
+        return { data: JSON.parse(content), sha: data.sha };
       } catch (e) {
-        console.log(`读取${filename}失败:`, e.message);
-        return null;
+        if (e.message.includes('404')) {
+          // 文件不存在，初始化
+          return null;
+        }
+        throw e;
       }
     }
 
     async function writeFile(filename, content, sha = null) {
       const body = {
-        access_token: giteeToken,
+        access_token: GITEE_TOKEN,
         content: btoa(unescape(encodeURIComponent(JSON.stringify(content, null, 2)))),
         message: `更新 ${filename}`
       };
       if (sha) body.sha = sha;
-
       return apiRequest('PUT', filename, body);
     }
 
     async function loadData() {
       try {
-        const [users, dishes, orders] = await Promise.all([
+        // 初始化文件如果不存在
+        await initIfNeeded();
+        
+        const [usersResult, dishesResult, ordersResult] = await Promise.all([
           readFile('accounts.json'),
           readFile('dishes.json'),
           readFile('orders.json')
         ]);
         
         cachedData = {
-          users: users?.users || [],
-          dishes: dishes?.dishes || [],
-          orders: orders?.orders || []
+          users: usersResult?.data?.users || [],
+          dishes: dishesResult?.data?.dishes || [],
+          orders: ordersResult?.data?.orders || []
         };
+        
+        console.log('数据加载成功', cachedData);
       } catch (e) {
         console.error('数据加载失败:', e);
-        showMessage('authMsg', '数据加载失败，请检查配置', '#ff4757');
+        showMessage('authMsg', '数据加载失败: ' + e.message, '#ff4757');
       }
     }
 
-    async function initDataFiles() {
-      const defaultAccounts = {
-        users: [{
-          id: 'admin001',
-          username: 'admin',
-          password: 'admin123',
-          role: 'admin',
-          status: 'approved'
-        }]
-      };
-
-      const defaultDishes = {
-        dishes: [
-          { id: 'd001', name: '品牌Logo设计', price: 500, desc: '含3版修改', available: true },
-          { id: 'd002', name: '海报设计', price: 300, desc: '活动海报设计', available: true },
-          { id: 'd003', name: 'UI界面设计', price: 2000, desc: '移动端/网页端', available: true },
-          { id: 'd004', name: '品牌VI手册', price: 5000, desc: '完整VI系统', available: true }
-        ]
-      };
-
-      const defaultOrders = { orders: [] };
-
-      try {
-        await writeFile('accounts.json', defaultAccounts);
-        await writeFile('dishes.json', defaultDishes);
-        await writeFile('orders.json', defaultOrders);
-      } catch (e) {
-        console.log('初始化文件失败(可能已存在):', e.message);
+    async function initIfNeeded() {
+      // 检查并创建accounts.json
+      const accountsResult = await readFile('accounts.json');
+      if (!accountsResult) {
+        await writeFile('accounts.json', {
+          users: [{
+            id: 'admin001',
+            username: 'admin',
+            password: 'admin123',
+            role: 'admin',
+            status: 'approved'
+          }]
+        });
+      }
+      
+      // 检查并创建dishes.json
+      const dishesResult = await readFile('dishes.json');
+      if (!dishesResult) {
+        await writeFile('dishes.json', {
+          dishes: [
+            { id: 'd001', name: '品牌Logo设计', price: 500, desc: '含3版修改', available: true },
+            { id: 'd002', name: '海报设计', price: 300, desc: '活动海报设计', available: true },
+            { id: 'd003', name: 'UI界面设计', price: 2000, desc: '移动端/网页端', available: true },
+            { id: 'd004', name: '品牌VI手册', price: 5000, desc: '完整VI系统', available: true }
+          ]
+        });
+      }
+      
+      // 检查并创建orders.json
+      const ordersResult = await readFile('orders.json');
+      if (!ordersResult) {
+        await writeFile('orders.json', { orders: [] });
       }
     }
 
@@ -275,11 +270,11 @@
       return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
     }
 
-    // ============ UI 辅助 ============
     function showMessage(id, text, color) {
       const el = document.getElementById(id);
+      if (!el) return;
       el.innerHTML = `<div class="message" style="color:${color}; border-color:${color};">${text}</div>`;
-      setTimeout(() => el.innerHTML = '', 3000);
+      setTimeout(() => { if (el) el.innerHTML = ''; }, 3000);
     }
 
     // ============ 认证 ============
@@ -299,7 +294,7 @@
         return;
       }
 
-      if (!cachedData) await loadData();
+      if (cachedData.users.length === 0) await loadData();
       
       const user = cachedData.users.find(u => u.username === username);
       if (!user) {
@@ -335,7 +330,7 @@
         return;
       }
 
-      if (!cachedData) await loadData();
+      if (cachedData.users.length === 0) await loadData();
       
       if (cachedData.users.find(u => u.username === username)) {
         showMessage('authMsg', '用户名已存在', '#ff4757');
@@ -351,12 +346,14 @@
       });
 
       try {
-        const fileData = await readFile('accounts.json');
-        await writeFile('accounts.json', { users: cachedData.users }, fileData?.sha);
+        const result = await readFile('accounts.json');
+        await writeFile('accounts.json', { users: cachedData.users }, result?.sha);
         showMessage('authMsg', '✅ 注册成功，请等待审核', '#00cc88');
         document.getElementById('regUser').value = '';
         document.getElementById('regPass').value = '';
       } catch (e) {
+        // 回滚
+        cachedData.users.pop();
         showMessage('authMsg', '注册失败: ' + e.message, '#ff4757');
       }
     }
@@ -411,12 +408,11 @@
 
     // ============ 点单区 ============
     function renderDishes() {
-      if (!cachedData) return;
       const available = cachedData.dishes.filter(d => d.available !== false);
       const grid = document.getElementById('dishGrid');
       
       if (available.length === 0) {
-        grid.innerHTML = '<div class="empty-state">暂无可用单子</div>';
+        grid.innerHTML = '<div class="empty-state">暂无可用服务</div>';
         return;
       }
 
@@ -512,8 +508,8 @@
       cachedData.orders.push(order);
 
       try {
-        const fileData = await readFile('orders.json');
-        await writeFile('orders.json', { orders: cachedData.orders }, fileData?.sha);
+        const result = await readFile('orders.json');
+        await writeFile('orders.json', { orders: cachedData.orders }, result?.sha);
         cart = [];
         updateCartCount();
         refreshUI();
@@ -521,13 +517,14 @@
         switchPanel('myOrdersPanel');
         document.querySelectorAll('.tab-btn')[2].classList.add('active');
       } catch (e) {
+        cachedData.orders.pop();
         alert('提交失败: ' + e.message);
       }
     }
 
     // ============ 我的订单 ============
     function renderMyOrders() {
-      if (!currentUser || !cachedData) return;
+      if (!currentUser) return;
       
       const myOrders = cachedData.orders
         .filter(o => o.userId === currentUser.id)
@@ -557,7 +554,7 @@
 
     // ============ 后台管理 ============
     function renderAdmin() {
-      if (!currentUser || currentUser.role !== 'admin' || !cachedData) return;
+      if (!currentUser || currentUser.role !== 'admin') return;
       
       // 菜品管理
       document.getElementById('adminDishes').innerHTML = cachedData.dishes.map(d => `
@@ -633,13 +630,15 @@
       });
 
       try {
-        const fileData = await readFile('dishes.json');
-        await writeFile('dishes.json', { dishes: cachedData.dishes }, fileData?.sha);
+        const result = await readFile('dishes.json');
+        await writeFile('dishes.json', { dishes: cachedData.dishes }, result?.sha);
         document.getElementById('dishName').value = '';
         document.getElementById('dishPrice').value = '';
         document.getElementById('dishDesc').value = '';
         refreshUI();
+        alert('✅ 添加成功');
       } catch (e) {
+        cachedData.dishes.pop();
         alert('添加失败: ' + e.message);
       }
     }
@@ -649,10 +648,11 @@
       if (dish) {
         dish.available = dish.available === false ? true : false;
         try {
-          const fileData = await readFile('dishes.json');
-          await writeFile('dishes.json', { dishes: cachedData.dishes }, fileData?.sha);
+          const result = await readFile('dishes.json');
+          await writeFile('dishes.json', { dishes: cachedData.dishes }, result?.sha);
           refreshUI();
         } catch (e) {
+          dish.available = !dish.available;
           alert('操作失败: ' + e.message);
         }
       }
@@ -660,12 +660,14 @@
 
     async function deleteDish(id) {
       if (!confirm('确定删除？')) return;
+      const backup = [...cachedData.dishes];
       cachedData.dishes = cachedData.dishes.filter(d => d.id !== id);
       try {
-        const fileData = await readFile('dishes.json');
-        await writeFile('dishes.json', { dishes: cachedData.dishes }, fileData?.sha);
+        const result = await readFile('dishes.json');
+        await writeFile('dishes.json', { dishes: cachedData.dishes }, result?.sha);
         refreshUI();
       } catch (e) {
+        cachedData.dishes = backup;
         alert('删除失败: ' + e.message);
       }
     }
@@ -675,10 +677,11 @@
       if (user) {
         user.status = 'approved';
         try {
-          const fileData = await readFile('accounts.json');
-          await writeFile('accounts.json', { users: cachedData.users }, fileData?.sha);
+          const result = await readFile('accounts.json');
+          await writeFile('accounts.json', { users: cachedData.users }, result?.sha);
           refreshUI();
         } catch (e) {
+          user.status = 'pending';
           alert('操作失败: ' + e.message);
         }
       }
@@ -686,12 +689,14 @@
 
     async function deleteUser(id) {
       if (!confirm('确定删除？')) return;
+      const backup = [...cachedData.users];
       cachedData.users = cachedData.users.filter(u => u.id !== id);
       try {
-        const fileData = await readFile('accounts.json');
-        await writeFile('accounts.json', { users: cachedData.users }, fileData?.sha);
+        const result = await readFile('accounts.json');
+        await writeFile('accounts.json', { users: cachedData.users }, result?.sha);
         refreshUI();
       } catch (e) {
+        cachedData.users = backup;
         alert('删除失败: ' + e.message);
       }
     }
@@ -700,26 +705,25 @@
       if (!status) return;
       const order = cachedData.orders.find(o => o.id === id);
       if (order) {
+        const oldStatus = order.status;
         order.status = status;
         try {
-          const fileData = await readFile('orders.json');
-          await writeFile('orders.json', { orders: cachedData.orders }, fileData?.sha);
+          const result = await readFile('orders.json');
+          await writeFile('orders.json', { orders: cachedData.orders }, result?.sha);
           refreshUI();
         } catch (e) {
+          order.status = oldStatus;
           alert('更新失败: ' + e.message);
         }
       }
     }
 
     // ============ 初始化 ============
-    loadConfig();
-    // 如果没有配置，5秒后检查
-    setTimeout(() => {
-      if (!giteeToken) {
-        document.getElementById('configBox').style.display = 'block';
-        document.getElementById('authBox').style.display = 'none';
-      }
-    }, 1000);
+    window.addEventListener('DOMContentLoaded', async () => {
+      console.log('系统启动...');
+      await loadData();
+      console.log('初始化完成');
+    });
   </script>
 </body>
 </html>
