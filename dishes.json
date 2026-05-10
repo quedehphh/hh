@@ -1,0 +1,32 @@
+{
+  "dishes": [
+    {
+      "id": "d001",
+      "name": "品牌Logo设计",
+      "price": 500,
+      "desc": "专业定制品牌Logo，含3版修改",
+      "available": true
+    },
+    {
+      "id": "d002",
+      "name": "海报设计",
+      "price": 300,
+      "desc": "活动海报/宣传海报设计",
+      "available": true
+    },
+    {
+      "id": "d003",
+      "name": "UI界面设计",
+      "price": 2000,
+      "desc": "移动端/网页端界面设计",
+      "available": true
+    },
+    {
+      "id": "d004",
+      "name": "品牌VI手册",
+      "price": 5000,
+      "desc": "完整品牌视觉识别系统",
+      "available": true
+    }
+  ]
+}
