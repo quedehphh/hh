@@ -1,0 +1,11 @@
+{
+  "users": [
+    {
+      "id": "admin001",
+      "username": "admin",
+      "password": "admin123",
+      "status": "approved",
+      "role": "admin"
+    }
+  ]
+}
