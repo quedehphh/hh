@@ -1,13 +1,6 @@
 {
   "dishes": [
     {
-      "id": "d001",
-      "name": "品牌Logo设计",
-      "price": 500,
-      "desc": "专业定制品牌Logo，含3版修改",
-      "available": true
-    },
-    {
       "id": "d002",
       "name": "海报设计",
       "price": 300,
