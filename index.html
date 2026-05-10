@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes">
+  <title>QUEDE Studio 护航工作室点单系统</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, 'Helvetica Neue', system-ui, sans-serif; }
+    body { background: linear-gradient(145deg, #0a0a1a 0%, #1a1a2e 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
+    .container { max-width: 1100px; width: 100%; background: rgba(20, 20, 40, 0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 2rem; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(100, 100, 255, 0.2); padding: 2rem 2rem 2.5rem; border: 1px solid rgba(100, 100, 255, 0.3); color: #e0e0ff; }
+
+    h1 { display: flex; align-items: center; gap: 0.8rem; font-weight: 700; font-size: 2rem; color: #c0c0ff; margin-bottom: 0.5rem; letter-spacing: -0.5px; }
+    .subtitle { color: #8080cc; margin-bottom: 2rem; font-size: 0.95rem; border-left: 4px solid #6c6cff; padding-left: 1rem; }
+
+    /* 登录区域 */
+    .auth-area { background: rgba(30, 30, 60, 0.6); border-radius: 1.5rem; padding: 1.5rem; margin-bottom: 2rem; border: 1px solid rgba(100, 100, 255, 0.2); }
+    .auth-tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+    .auth-tab { background: transparent; border: 1px solid rgba(100, 100, 255, 0.4); padding: 0.5rem 1.5rem; border-radius: 2rem; color: #b0b0ff; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: all 0.3s; }
+    .auth-tab.active { background: #6c6cff; color: white; border-color: #6c6cff; box-shadow: 0 0 20px rgba(108, 108, 255, 0.4); }
+    .auth-form { display: none; gap: 0.8rem; align-items: center; flex-wrap: wrap; }
+    .auth-form.active { display: flex; }
+
+    input, select, textarea { background: rgba(10, 10, 30, 0.8); border: 1px solid rgba(100, 100, 255, 0.3); padding: 0.75rem 1.2rem; border-radius: 1.5rem; font-size: 0.95rem; outline: none; color: #e0e0ff; transition: 0.3s; }
+    input:focus, select:focus, textarea:focus { border-color: #6c6cff; box-shadow: 0 0 15px rgba(108, 108, 255, 0.3); }
+    input::placeholder { color: #6060aa; }
+
+    .btn { background: #6c6cff; color: white; border: none; padding: 0.7rem 1.8rem; border-radius: 2.5rem; font-weight: 600; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(108, 108, 255, 0.3); white-space: nowrap; font-size: 0.9rem; }
+    .btn:hover { background: #8080ff; box-shadow: 0 6px 20px rgba(108, 108, 255, 0.5); transform: translateY(-1px); }
+    .btn-outline { background: transparent; border: 1px solid #6c6cff; color: #b0b0ff; }
+    .btn-outline:hover { background: rgba(108, 108, 255, 0.1); }
+    .btn-danger { background: #ff4444; box-shadow: 0 4px 15px rgba(255, 68, 68, 0.3); }
+    .btn-danger:hover { background: #ff6666; }
+    .btn-small { padding: 0.3rem 1rem; font-size: 0.8rem; border-radius: 2rem; }
+    .btn-success { background: #00cc88; box-shadow: 0 4px 15px rgba(0, 204, 136, 0.3); }
+
+    /* 主界面 */
+    .main-app { display: none; }
+    .main-app.active { display: block; }
+    .user-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
+    .user-info { display: flex; align-items: center; gap: 0.5rem; color: #b0b0ff; }
+
+    .tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .tab-btn { background: rgba(30, 30, 60, 0.6); border: 1px solid rgba(100, 100, 255, 0.2); padding: 0.6rem 1.5rem; border-radius: 2rem; font-weight: 600; color: #b0b0ff; cursor: pointer; transition: all 0.3s; font-size: 0.9rem; }
+    .tab-btn.active { background: #6c6cff; color: white; border-color: #6c6cff; box-shadow: 0 0 20px rgba(108, 108, 255, 0.4); }
+
+    .panel { display: none; animation: fadeIn 0.3s ease; }
+    .panel.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .card { background: rgba(30, 30, 60, 0.5); backdrop-filter: blur(10px); border-radius: 1.5rem; padding: 1.5rem; border: 1px solid rgba(100, 100, 255, 0.2); margin-bottom: 1.5rem; }
+    .card h3 { color: #c0c0ff; margin-bottom: 1rem; }
+
+    .dish-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem; }
+    .dish-item { background: rgba(40, 40, 80, 0.5); border-radius: 1rem; padding: 1.2rem; border: 1px solid rgba(100, 100, 255, 0.2); transition: all 0.3s; }
+    .dish-item:hover { border-color: #6c6cff; box-shadow: 0 0 20px rgba(108, 108, 255, 0.15); }
+    .dish-name { font-weight: 700; font-size: 1.1rem; color: #c0c0ff; }
+    .dish-price { color: #00cc88; font-weight: 700; font-size: 1.2rem; margin: 0.5rem 0; }
+    .dish-desc { color: #8080cc; font-size: 0.85rem; margin-bottom: 0.8rem; }
+
+    .order-item { display: flex; justify-content: space-between; align-items: center; padding: 1rem; border-bottom: 1px solid rgba(100, 100, 255, 0.15); flex-wrap: wrap; gap: 0.5rem; }
+    .order-item:last-child { border-bottom: none; }
+    .order-info { flex: 1; min-width: 200px; }
+    .order-name { font-weight: 700; color: #c0c0ff; }
+    .order-meta { font-size: 0.85rem; color: #8080cc; }
+
+    .badge { display: inline-block; padding: 0.3rem 0.8rem; border-radius: 1.5rem; font-weight: 700; font-size: 0.8rem; }
+    .badge-pending { background: #ffeeba; color: #856404; }
+    .badge-paid { background: #d4edda; color: #155724; }
+    .badge-completed { background: #cce5ff; color: #004085; }
+    .badge-unpaid { background: #f8d7da; color: #721c24; }
+
+    .result-box { max-height: 400px; overflow-y: auto; }
+    .result-box::-webkit-scrollbar { width: 6px; }
+    .result-box::-webkit-scrollbar-track { background: transparent; }
+    .result-box::-webkit-scrollbar-thumb { background: rgba(100, 100, 255, 0.3); border-radius: 3px; }
+
+    .empty-state { text-align: center; padding: 2rem; color: #6060aa; }
+
+    hr { border: none; border-top: 1px solid rgba(100, 100, 255, 0.2); margin: 1.5rem 0; }
+
+    @media (max-width: 640px) {
+      .container { padding: 1.2rem; }
+      .btn { padding: 0.6rem 1.2rem; font-size: 0.85rem; }
+      input, select { padding: 0.6rem 1rem; }
+      .dish-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🛡️ QUEDE Studio</h1>
+    <div class="subtitle">护航工作室 · 专业点单系统</div>
+
+    <!-- ==================== 登录/注册区 ==================== -->
+    <div class="auth-area" id="authArea">
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tabLogin">🔑 登录</button>
+        <button class="auth-tab" id="tabRegister">📝 注册</button>
+      </div>
+      <div class="auth-form active" id="loginForm">
+        <input type="text" id="loginUser" placeholder="用户名" autocomplete="username">
+        <input type="password" id="loginPass" placeholder="密码" autocomplete="current-password">
+        <button class="btn" id="btnLogin">登录</button>
+      </div>
+      <div class="auth-form" id="registerForm">
+        <input type="text" id="regUser" placeholder="设置用户名">
+        <input type="password" id="regPass" placeholder="设置密码">
+        <button class="btn" id="btnRegister">提交注册申请</button>
+      </div>
+      <div id="authMessage" style="margin-top: 0.8rem; font-size: 0.9rem;"></div>
+    </div>
+
+    <!-- ==================== 主应用界面 ==================== -->
+    <div class="main-app" id="mainApp">
+      <div class="user-bar">
+        <div class="user-info">
+          <span>👤</span>
+          <span id="currentUserDisplay"></span>
+          <span id="adminBadge" style="display:none; color:#ffcc00; font-weight:700;">[管理员]</span>
+        </div>
+        <button class="btn btn-outline btn-small" id="btnLogout">退出登录</button>
+      </div>
+
+      <div class="tabs" id="mainTabs">
+        <button class="tab-btn active" data-panel="orderPanel">📋 点单区</button>
+        <button class="tab-btn" data-panel="cartPanel">🛒 购物车 <span id="cartCount" style="background:#ff4444; color:white; border-radius:50%; padding:0.1rem 0.5rem; font-size:0.75rem; display:none;">0</span></button>
+        <button class="tab-btn" data-panel="myOrdersPanel">📦 已下单区</button>
+        <button class="tab-btn admin-only" data-panel="adminPanel" id="tabAdmin" style="display:none;">⚙️ 后台管理</button>
+      </div>
+
+      <!-- 点单区 -->
+      <div class="panel active" id="orderPanel">
+        <div class="card">
+          <h3>📋 服务项目</h3>
+          <div class="dish-grid" id="dishGrid">
+            <div class="empty-state">加载中...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 购物车 -->
+      <div class="panel" id="cartPanel">
+        <div class="card">
+          <h3>🛒 我的购物车</h3>
+          <div id="cartItems" class="result-box">
+            <div class="empty-state">购物车是空的</div>
+          </div>
+          <div id="cartTotal" style="margin-top:1rem; font-weight:700; color:#00cc88; font-size:1.2rem;"></div>
+          <button class="btn btn-success" id="btnSubmitOrder" style="margin-top:1rem;" disabled>📤 提交订单</button>
+        </div>
+      </div>
+
+      <!-- 已下单区 -->
+      <div class="panel" id="myOrdersPanel">
+        <div class="card">
+          <h3>📦 我的订单</h3>
+          <div id="myOrdersList" class="result-box">
+            <div class="empty-state">暂无订单</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 后台管理 -->
+      <div class="panel admin-only" id="adminPanel">
+        <div class="card">
+          <h3>⚙️ 后台管理</h3>
+          
+          <!-- 菜品管理 -->
+          <h4 style="color:#c0c0ff; margin-bottom:0.8rem;">➕ 添加菜品</h4>
+          <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1rem;">
+            <input type="text" id="adminDishName" placeholder="菜品名称" style="flex:1;">
+            <input type="number" id="adminDishPrice" placeholder="价格" step="0.01" style="flex:0.5;">
+            <input type="text" id="adminDishDesc" placeholder="描述(选填)" style="flex:1.5;">
+            <button class="btn btn-small" id="btnAddDish">添加</button>
+          </div>
+          <div id="adminDishList" class="result-box" style="max-height:300px;"></div>
+
+          <hr>
+
+          <!-- 账户管理 -->
+          <h4 style="color:#c0c0ff; margin-bottom:0.8rem;">👥 账户审核</h4>
+          <div id="adminUserList" class="result-box" style="max-height:300px;"></div>
+
+          <hr>
+
+          <!-- 订单管理 -->
+          <h4 style="color:#c0c0ff; margin-bottom:0.8rem;">📋 所有订单</h4>
+          <div id="adminOrderList" class="result-box" style="max-height:400px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // ==================== 配置区——请修改为你的信息 ====================
+      const GITHUB_USERNAME = '你的GitHub用户名';
+      const REPO_NAME = '你的仓库名';
+      
+      const ACCOUNTS_FILE = 'accounts.json';
+      const DISHES_FILE = 'dishes.json';
+      const ORDERS_FILE = 'orders.json';
+      
+      const API_RAW = `https://raw.githubusercontent.com/${GITHUB_USERNAME}/${REPO_NAME}/main`;
+      const DISPATCH_URL = `https://api.github.com/repos/${GITHUB_USERNAME}/${REPO_NAME}/actions/workflows/studio-backend.yml/dispatches`;
+
+      // ==================== 状态 ====================
+      let githubToken = '';
+      let currentUser = null;
+      let isAdmin = false;
+      let cart = [];
+      let dishes = [];
+      let orders = [];
+      let accounts = [];
+
+      // ==================== 工具函数 ====================
+      function escapeHtml(text) {
+        return String(text).replace(/[&<>"]/g, m => ({'&':'&','<':'<','>':'>','"':'"'}[m] || m));
+      }
+
+      function generateId() {
+        return Date.now().toString(36) + Math.random().toString(36).substring(2, 8);
+      }
+
+      function showMessage(elementId, text, color = '#b0b0ff') {
+        const el = document.getElementById(elementId);
+        el.innerHTML = `<span style="color:${color};">${text}</span>`;
+        setTimeout(() => { if (el.innerHTML.includes(text)) el.innerHTML = ''; }, 5000);
+      }
+
+      // ==================== 数据读写 ====================
+      async function fetchFile(filename) {
+        const url = `${API_RAW}/${filename}`;
+        const response = await fetch(url, { cache: 'no-cache' });
+        if (!response.ok) {
+          if (response.status === 404) return null;
+          throw new Error(`读取失败 (${response.status})`);
+        }
+        return await response.json();
+      }
+
+      async function triggerWorkflow(action, data, extraParams = {}) {
+        const body = {
+          ref: 'main',
+          inputs: {
+            action: action,
+            payload: typeof data === 'string' ? data : JSON.stringify(data)
+          }
+        };
+        if (extraParams.file) body.inputs.file = extraParams.file;
+        if (extraParams.id) body.inputs.item_id = extraParams.id;
+        if (extraParams.username) body.inputs.username = extraParams.username;
+
+        const response = await fetch(DISPATCH_URL, {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/vnd.github.v3+json',
+            'Authorization': `token ${githubToken}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(body)
+        });
+        if (!response.ok) throw new Error(`操作失败 (${response.status})`);
+        // 等待 Actions 执行（约3-5秒）
+        await new Promise(resolve => setTimeout(resolve, 4000));
+      }
+
+      async function loadAllData() {
+        try {
+          const [accData, dishData, orderData] = await Promise.all([
+            fetchFile(ACCOUNTS_FILE),
+            fetchFile(DISHES_FILE),
+            fetchFile(ORDERS_FILE)
+          ]);
+          accounts = accData?.users || [];
+          dishes = dishData?.dishes || [];
+          orders = orderData?.orders || [];
+        } catch (e) {
+          console.error('数据加载失败:', e);
+        }
+      }
+
+      // ==================== 认证 ====================
+      document.getElementById('tabLogin').addEventListener('click', () => switchAuthTab('login'));
+      document.getElementById('tabRegister').addEventListener('click', () => switchAuthTab('register'));
+
+      function switchAuthTab(tab) {
+        document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
+        document.getElementById('tabRegister').classList.toggle('active', tab === 'register');
+        document.getElementById('loginForm').classList.toggle('active', tab === 'login');
+        document.getElementById('registerForm').classList.toggle('active', tab === 'register');
+      }
+
+      document.getElementById('btnLogin').addEventListener('click', async () => {
+        const username = document.getElementById('loginUser').value.trim();
+        const password = document.getElementById('loginPass').value.trim();
+        if (!username || !password) return showMessage('authMessage', '请填写用户名和密码', '#ff6666');
+
+        await loadAllData();
+        const user = accounts.find(u => u.username === username);
+        if (!user) return showMessage('authMessage', '用户不存在', '#ff6666');
+        if (user.status === 'pending') return showMessage('authMessage', '账户尚未通过审核，请等待管理员审核', '#ffcc00');
+        if (user.password !== password) return showMessage('authMessage', '密码错误', '#ff6666');
+
+        loginSuccess(user);
+      });
+
+      document.getElementById('btnRegister').addEventListener('click', async () => {
+        const username = document.getElementById('regUser').value.trim();
+        const password = document.getElementById('regPass').value.trim();
+        if (!username || !password) return showMessage('authMessage', '请填写用户名和密码', '#ff6666');
+        if (username.length < 3) return showMessage('authMessage', '用户名至少3个字符', '#ff6666');
+        if (password.length < 4) return showMessage('authMessage', '密码至少4个字符', '#ff6666');
+
+        if (!githubToken) {
+          // 注册不需要token，直接触发workflow
+          // 但首次使用需要提示管理员配置
+        }
+
+        await loadAllData();
+        if (accounts.find(u => u.username === username)) {
+          return showMessage('authMessage', '用户名已存在', '#ff6666');
+        }
+
+        try {
+          const newUser = { id: generateId(), username, password, status: 'pending', role: 'user' };
+          await triggerWorkflow('add_user', newUser, { file: ACCOUNTS_FILE });
+          showMessage('authMessage', '注册申请已提交，请等待管理员审核', '#00cc88');
+          document.getElementById('regUser').value = '';
+          document.getElementById('regPass').value = '';
+        } catch (e) {
+          showMessage('authMessage', '注册失败: ' + e.message, '#ff6666');
+        }
+      });
+
+      function loginSuccess(user) {
+        currentUser = user;
+        isAdmin = user.role === 'admin';
+        document.getElementById('authArea').style.display = 'none';
+        document.getElementById('mainApp').classList.add('active');
+        document.getElementById('currentUserDisplay').textContent = user.username;
+        document.getElementById('adminBadge').style.display = isAdmin ? 'inline' : 'none';
+        
+        // 显示管理员tab
+        if (isAdmin) {
+          document.getElementById('tabAdmin').style.display = 'inline-block';
+          // 首次登录管理员需要输入token
+          if (!githubToken) {
+            const token = prompt('管理员首次使用，请输入GitHub Token（仅存储在当前浏览器会话中）：');
+            if (token) {
+              githubToken = token.trim();
+              sessionStorage.setItem('studio_gh_token', githubToken);
+            }
+          }
+        }
+        
+        refreshAllUI();
+      }
+
+      document.getElementById('btnLogout').addEventListener('click', () => {
+        currentUser = null;
+        isAdmin = false;
+        cart = [];
+        document.getElementById('authArea').style.display = 'block';
+        document.getElementById('mainApp').classList.remove('active');
+        document.getElementById('loginUser').value = '';
+        document.getElementById('loginPass').value = '';
+      });
+
+      // ==================== 主界面切换 ====================
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const panelId = btn.dataset.panel;
+          if (!panelId) return;
+          document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+          document.getElementById(panelId).classList.add('active');
+          refreshCurrentPanel(panelId);
+        });
+      });
+
+      function refreshCurrentPanel(panelId) {
+        switch (panelId) {
+          case 'orderPanel': renderDishGrid(); break;
+          case 'cartPanel': renderCart(); break;
+          case 'myOrdersPanel': renderMyOrders(); break;
+          case 'adminPanel': refreshAdminPanel(); break;
+        }
+      }
+
+      async function refreshAllUI() {
+        await loadAllData();
+        renderDishGrid();
+        renderCart();
+        renderMyOrders();
+        if (isAdmin) refreshAdminPanel();
+      }
+
+      // ==================== 点单区 ====================
+      function renderDishGrid() {
+        const grid = document.getElementById('dishGrid');
+        const availableDishes = dishes.filter(d => d.available !== false);
+        if (availableDishes.length === 0) {
+          grid.innerHTML = '<div class="empty-state">暂无可用服务</div>';
+          return;
+        }
+        grid.innerHTML = availableDishes.map(d => `
+          <div class="dish-item">
+            <div class="dish-name">${escapeHtml(d.name)}</div>
+            <div class="dish-price">¥${d.price.toFixed(2)}</div>
+            ${d.desc ? `<div class="dish-desc">${escapeHtml(d.desc)}</div>` : ''}
+            <button class="btn btn-small" onclick="window.addToCart('${d.id}')">➕ 加入购物车</button>
+          </div>
+        `).join('');
+      }
+
+      window.addToCart = function (dishId) {
+        const dish = dishes.find(d => d.id === dishId);
+        if (!dish) return;
+        const existing = cart.find(c => c.dishId === dishId);
+        if (existing) {
+          existing.quantity++;
+        } else {
+          cart.push({ dishId: dishId, name: dish.name, price: dish.price, quantity: 1 });
+        }
+        updateCartBadge();
+        showMessage('authMessage', `已添加 ${dish.name} 到购物车`, '#00cc88');
+      };
+
+      function updateCartBadge() {
+        const count = cart.reduce((sum, c) => sum + c.quantity, 0);
+        const badge = document.getElementById('cartCount');
+        badge.textContent = count;
+        badge.style.display = count > 0 ? 'inline-block' : 'none';
+      }
+
+      // ==================== 购物车 ====================
+      function renderCart() {
+        const container = document.getElementById('cartItems');
+        const totalEl = document.getElementById('cartTotal');
+        const submitBtn = document.getElementById('btnSubmitOrder');
+
+        if (cart.length === 0) {
+          container.innerHTML = '<div class="empty-state">购物车是空的</div>';
+          totalEl.innerHTML = '';
+          submitBtn.disabled = true;
+          return;
+        }
+
+        const total = cart.reduce((sum, c) => sum + c.price * c.quantity, 0);
+        container.innerHTML = cart.map((c, index) => `
+          <div class="order-item">
+            <div class="order-info">
+              <div class="order-name">${escapeHtml(c.name)}</div>
+              <div class="order-meta">¥${c.price.toFixed(2)} x ${c.quantity}</div>
+            </div>
+            <div>
+              <button class="btn btn-outline btn-small" onclick="window.changeQty(${index}, -1)">➖</button>
+              <span style="margin:0 0.5rem;">${c.quantity}</span>
+              <button class="btn btn-outline btn-small" onclick="window.changeQty(${index}, 1)">➕</button>
+              <button class="btn btn-danger btn-small" onclick="window.removeFromCart(${index})">🗑</button>
+            </div>
+          </div>
+        `).join('');
+        totalEl.innerHTML = `合计：<span style="color:#00cc88;">¥${total.toFixed(2)}</span>`;
+        submitBtn.disabled = false;
+      }
+
+      window.changeQty = function (index, delta) {
+        cart[index].quantity += delta;
+        if (cart[index].quantity <= 0) cart.splice(index, 1);
+        updateCartBadge();
+        renderCart();
+      };
+
+      window.removeFromCart = function (index) {
+        cart.splice(index, 1);
+        updateCartBadge();
+        renderCart();
+      };
+
+      document.getElementById('btnSubmitOrder').addEventListener('click', async () => {
+        if (!currentUser) return alert('请先登录');
+        if (cart.length === 0) return alert('购物车为空');
+        if (!githubToken && !isAdmin) return alert('系统暂不可用，请联系管理员配置');
+
+        try {
+          const newOrder = {
+            id: generateId(),
+            userId: currentUser.id,
+            username: currentUser.username,
+            items: [...cart],
+            total: cart.reduce((s, c) => s + c.price * c.quantity, 0),
+            status: '已下单',
+            createdAt: new Date().toISOString()
+          };
+
+          await triggerWorkflow('add_order', newOrder, { file: ORDERS_FILE });
+          cart = [];
+          updateCartBadge();
+          await refreshAllUI();
+          showMessage('authMessage', '订单已提交！', '#00cc88');
+          // 切换到已下单区
+          document.querySelector('[data-panel="myOrdersPanel"]').click();
+        } catch (e) {
+          alert('提交失败: ' + e.message);
+        }
+      });
+
+      // ==================== 已下单区 ====================
+      function renderMyOrders() {
+        const container = document.getElementById('myOrdersList');
+        if (!currentUser) return;
+        
+        const myOrders = orders
+          .filter(o => o.userId === currentUser.id)
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+        if (myOrders.length === 0) {
+          container.innerHTML = '<div class="empty-state">暂无订单</div>';
+          return;
+        }
+
+        container.innerHTML = myOrders.map(o => {
+          const statusBadge = {
+            '已下单': 'badge-pending',
+            '未支付': 'badge-unpaid',
+            '已完成': 'badge-completed'
+          }[o.status] || 'badge-pending';
+
+          const itemsHtml = o.items.map(i => `${escapeHtml(i.name)} x${i.quantity}`).join(', ');
+
+          return `
+            <div class="order-item">
+              <div class="order-info">
+                <div class="order-name">${itemsHtml}</div>
+                <div class="order-meta">¥${o.total.toFixed(2)} · ${new Date(o.createdAt).toLocaleString('zh-CN')}</div>
+              </div>
+              <span class="badge ${statusBadge}">${o.status}</span>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // ==================== 后台管理 ====================
+      async function refreshAdminPanel() {
+        if (!isAdmin) return;
+        await loadAllData();
+        renderAdminDishes();
+        renderAdminUsers();
+        renderAdminOrders();
+      }
+
+      function renderAdminDishes() {
+        const container = document.getElementById('adminDishList');
+        container.innerHTML = dishes.map(d => `
+          <div class="order-item">
+            <div class="order-info">
+              <div class="order-name">${escapeHtml(d.name)} - ¥${d.price.toFixed(2)}</div>
+              <div class="order-meta">${escapeHtml(d.desc || '')} ${d.available === false ? '[已下架]' : ''}</div>
+            </div>
+            <div>
+              <button class="btn btn-outline btn-small" onclick="window.toggleDish('${d.id}')">${d.available !== false ? '下架' : '上架'}</button>
+              <button class="btn btn-danger btn-small" onclick="window.deleteDish('${d.id}')">删除</button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      document.getElementById('btnAddDish').addEventListener('click', async () => {
+        const name = document.getElementById('adminDishName').value.trim();
+        const priceStr = document.getElementById('adminDishPrice').value;
+        const desc = document.getElementById('adminDishDesc').value.trim();
+        if (!name || !priceStr) return alert('请填写名称和价格');
+
+        try {
+          const newDish = {
+            id: generateId(),
+            name,
+            price: parseFloat(priceStr),
+            desc,
+            available: true
+          };
+          await triggerWorkflow('add_dish', newDish, { file: DISHES_FILE });
+          document.getElementById('adminDishName').value = '';
+          document.getElementById('adminDishPrice').value = '';
+          document.getElementById('adminDishDesc').value = '';
+          await refreshAllUI();
+        } catch (e) { alert('添加失败: ' + e.message); }
+      });
+
+      window.toggleDish = async function (id) {
+        const dish = dishes.find(d => d.id === id);
+        if (!dish) return;
+        dish.available = dish.available === false ? true : false;
+        try {
+          await triggerWorkflow('update_all', { dishes }, { file: DISHES_FILE });
+          await refreshAllUI();
+        } catch (e) { alert('操作失败: ' + e.message); }
+      };
+
+      window.deleteDish = async function (id) {
+        if (!confirm('确定删除该菜品？')) return;
+        try {
+          await triggerWorkflow('delete_item', {}, { file: DISHES_FILE, id });
+          await refreshAllUI();
+        } catch (e) { alert('删除失败: ' + e.message); }
+      };
+
+      function renderAdminUsers() {
+        const container = document.getElementById('adminUserList');
+        container.innerHTML = accounts.map(a => `
+          <div class="order-item">
+            <div class="order-info">
+              <div class="order-name">${escapeHtml(a.username)} <span style="font-size:0.8rem; color:#8080cc;">(${a.role})</span></div>
+              <div class="order-meta">状态: ${a.status}</div>
+            </div>
+            <div>
+              ${a.status === 'pending' ? `<button class="btn btn-success btn-small" onclick="window.approveUser('${a.id}')">审核通过</button>` : ''}
+              <button class="btn btn-danger btn-small" onclick="window.deleteUser('${a.id}')">删除</button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      window.approveUser = async function (id) {
+        const user = accounts.find(a => a.id === id);
+        if (!user) return;
+        user.status = 'approved';
+        try {
+          await triggerWorkflow('update_all', { users: accounts }, { file: ACCOUNTS_FILE });
+          await refreshAllUI();
+        } catch (e) { alert('操作失败: ' + e.message); }
+      };
+
+      window.deleteUser = async function (id) {
+        if (!confirm('确定删除该用户？')) return;
+        try {
+          await triggerWorkflow('delete_item', {}, { file: ACCOUNTS_FILE, id });
+          await refreshAllUI();
+        } catch (e) { alert('删除失败: ' + e.message); }
+      };
+
+      function renderAdminOrders() {
+        const container = document.getElementById('adminOrderList');
+        const sorted = [...orders].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        container.innerHTML = sorted.map(o => {
+          const itemsHtml = o.items.map(i => `${escapeHtml(i.name)} x${i.quantity}`).join(', ');
+          return `
+            <div class="order-item">
+              <div class="order-info">
+                <div class="order-name">${escapeHtml(o.username)}: ${itemsHtml}</div>
+                <div class="order-meta">¥${o.total.toFixed(2)} · ${new Date(o.createdAt).toLocaleString('zh-CN')}</div>
+              </div>
+              <div style="display:flex; gap:0.5rem; align-items:center;">
+                <span class="badge badge-${o.status === '已下单' ? 'pending' : o.status === '未支付' ? 'unpaid' : 'completed'}">${o.status}</span>
+                <select onchange="window.updateOrderStatus('${o.id}', this.value)" style="padding:0.2rem; font-size:0.8rem;">
+                  <option value="">修改</option>
+                  <option value="未支付">未支付</option>
+                  <option value="已完成">已完成</option>
+                </select>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      window.updateOrderStatus = async function (id, newStatus) {
+        if (!newStatus) return;
+        const order = orders.find(o => o.id === id);
+        if (!order) return;
+        order.status = newStatus;
+        try {
+          await triggerWorkflow('update_all', { orders }, { file: ORDERS_FILE });
+          await refreshAllUI();
+        } catch (e) { alert('更新失败: ' + e.message); }
+      };
+
+      // ==================== 初始化 ====================
+      async function init() {
+        // 恢复Token
+        const savedToken = sessionStorage.getItem('studio_gh_token');
+        if (savedToken) githubToken = savedToken;
+
+        await loadAllData();
+        
+        // 检查是否有已登录的管理员（token有效）
+        // 简单处理：刷新页面需要重新登录
+      }
+
+      init();
+    })();
+  </script>
+</body>
+</html>
