@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>用户协议 - QUEDE Studio护航工作室</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Microsoft YaHei', sans-serif; }
+    body { background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 100%); min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; padding: 20px; }
+
+    .container { max-width: 900px; width: 100%; background: rgba(20,20,40,0.9); backdrop-filter: blur(20px); border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); padding: 40px; color: #e0e0ff; border: 1px solid rgba(100,100,255,0.2); margin-top: 20px; margin-bottom: 20px; }
+
+    /* 顶部导航 */
+    .top-nav { display: flex; align-items: center; gap: 15px; margin-bottom: 30px; flex-wrap: wrap; }
+    .back-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: rgba(30,30,60,0.8); border: 1px solid rgba(100,100,255,0.3); color: #c0c0ff; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 14px; transition: all 0.3s; cursor: pointer; }
+    .back-btn:hover { background: rgba(108,108,255,0.3); border-color: #6c6cff; color: #fff; box-shadow: 0 5px 15px rgba(108,108,255,0.3); transform: translateY(-2px); }
+    .back-icon { font-size: 18px; }
+
+    h1 { text-align: center; color: #c0c0ff; margin-bottom: 5px; font-size: 2em; }
+    .subtitle { text-align: center; color: #8080cc; margin-bottom: 30px; font-size: 14px; }
+
+    .version-info { text-align: center; color: #6060aa; font-size: 12px; margin-bottom: 30px; padding: 10px; background: rgba(30,30,60,0.5); border-radius: 8px; }
+
+    /* 协议内容样式 */
+    .agreement-content { font-size: 14px; line-height: 1.8; }
+
+    .agreement-content h2 { color: #c0c0ff; font-size: 1.3em; margin-top: 30px; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid rgba(100,100,255,0.2); }
+    .agreement-content h3 { color: #b0b0ff; font-size: 1.05em; margin-top: 15px; margin-bottom: 10px; }
+    .agreement-content p { margin-bottom: 12px; color: #d0d0f0; }
+    .agreement-content strong { color: #e0e0ff; }
+    .agreement-content .highlight { color: #ffa502; font-weight: bold; }
+    .agreement-content .warning { color: #ff6b81; font-weight: bold; }
+
+    .agreement-content ul, .agreement-content ol { margin-bottom: 12px; padding-left: 20px; }
+    .agreement-content li { margin-bottom: 6px; color: #d0d0f0; }
+
+    /* 联系卡片 */
+    .contact-card { background: rgba(30,30,60,0.6); border: 1px solid rgba(100,100,255,0.3); border-radius: 12px; padding: 20px; margin-top: 25px; text-align: center; }
+    .contact-card h3 { color: #c0c0ff; margin-bottom: 15px; font-size: 16px; }
+    .contact-info { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; }
+    .contact-item { display: flex; align-items: center; gap: 8px; color: #b0b0ff; font-size: 14px; }
+    .contact-label { color: #8080cc; }
+
+    /* 底部 */
+    .footer { margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(100,100,255,0.2); display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 15px; font-size: 13px; }
+    .footer a { color: #8080cc; text-decoration: none; transition: color 0.3s; }
+    .footer a:hover { color: #c0c0ff; text-decoration: underline; }
+    .footer .divider { color: rgba(100,100,255,0.3); }
+
+    /* 滚动条 */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: rgba(10,10,30,0.5); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb { background: rgba(108,108,255,0.4); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(108,108,255,0.6); }
+
+    /* 响应式 */
+    @media (max-width: 600px) {
+      .container { padding: 20px; }
+      h1 { font-size: 1.5em; }
+      .agreement-content { font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- 顶部导航 -->
+    <div class="top-nav">
+      <a href="https://quedehphh.github.io/hh/" class="back-btn">
+        <span class="back-icon">&#8592;</span> 返回主页
+      </a>
+    </div>
+
+    <!-- 标题 -->
+    <h1>用户服务协议</h1>
+    <p class="subtitle">QUEDE Studio 护航工作室</p>
+
+    <!-- 版本信息 -->
+    <div class="version-info">
+      <strong>版本更新日期：</strong>2026年05月16日 &nbsp;|&nbsp; <strong>生效日期：</strong>2026年05月16日
+    </div>
+
+    <!-- 协议正文 -->
+    <div class="agreement-content">
+
+      <p><strong>尊敬的用户：</strong></p>
+      <p>欢迎您选择QUEDE Studio护航工作室（以下简称"本工作室"或"我们"）提供的游戏护航、装备交易及上星服务。为保障您的合法权益，请您在使用我们的服务前，仔细阅读并充分理解本协议的全部内容，特别是免除或限制责任的条款、法律适用和争议解决条款。<strong>限制、免责条款可能以加粗等形式提示您重点注意。</strong></p>
+      <p>您通过点击同意、购买服务或使用本工作室提供的任何服务等行为，即视为您已阅读、理解并同意接受本协议的全部条款，本协议即构成对双方具有法律约束力的法律文件。如您不同意本协议的任何条款，请立即停止使用我们的服务。</p>
+
+      <h2>一、服务内容与定义</h2>
+      <p><strong>1.1 游戏护航服务：</strong>指由本工作室指派的专业人员，通过组队、协同作战等方式，陪伴您在《和平精英》、《王者荣耀》、《三角洲行动》（以下简称"指定游戏"）中进行游戏，以提升您的游戏体验、保护您的游戏安全或协助您达成特定游戏目标（如提升段位）的服务。</p>
+      <p><strong>1.2 装备交易服务：</strong>指本工作室作为居间方或交易平台，为《和平精英》"地铁逃生"模式中的游戏虚拟装备提供交易撮合、担保与交付支持的服务，交易标的包括但不限于<span class="highlight">金枪、传世武器</span>等稀有虚拟道具。</p>
+      <p><strong>1.3 上星服务：</strong>指您委托本工作室，由我方人员通过游戏内联机组队带飞的方式，在对局中协同作战，协助您的游戏账号段位提升至约定星数或段位的服务。<strong>该服务全程通过游戏内联机完成，您无需向本工作室提供或交出您的游戏账号密码。</strong></p>
+      <p><strong>1.4 用户（亦称"老板"）：</strong>指购买、使用本工作室服务的具有完全民事行为能力的自然人。</p>
+
+      <h2>二、用户（老板）诚信义务与守约责任</h2>
+      <p><strong>2.1 诚信交易义务：</strong>您承诺在使用本工作室服务过程中，恪守诚信原则，严格遵守本协议约定，不得有任何欺诈、违约或不正当行为。</p>
+      <p><strong>2.2 禁止逃单：</strong>您不得在服务已完成或进行中，以任何理由拒绝、拖延支付服务费用，或通过支付平台发起恶意退款、拒付。</p>
+      <p><strong>2.3 禁止作弊与利用漏洞：</strong></p>
+      <ul>
+        <li>（1）您不得在使用本工作室服务期间，自行或授意他人使用任何外挂、修改器、脚本、辅助程序等第三方作弊软件。</li>
+        <li>（2）您不得利用游戏漏洞（BUG）获取不正当利益，或教唆、协助他人利用游戏漏洞。</li>
+        <li>（3）如因您存在上述作弊或利用漏洞的行为，导致您的游戏账号被警告、限制、封禁、清分等，<span class="warning">相关责任与损失由您自行承担，本工作室概不负责。</span></li>
+      </ul>
+      <p><strong>2.4 赔偿责任：</strong>因您的以下行为导致本工作室及/或我们的工作人员遭受任何损失（包括但不限于账号封禁、商誉损害、经济赔偿、律师费、诉讼费等），<span class="warning">您需承担全部赔偿责任：</span></p>
+      <ul>
+        <li>（1）您违反第2.2条、第2.3条的约定；</li>
+        <li>（2）您的其他违约或违法行为致使本工作室被游戏官方处罚或被第三方索赔；</li>
+        <li>（3）您在交易中发布虚假信息、使用非法资金来源，或交易来源非法的"黑货"装备。</li>
+      </ul>
+
+      <h2>三、账号使用与安全</h2>
+      <p><strong>3.1</strong> 本工作室提供的上星服务全程通过游戏内联机带飞完成，<strong>您无需向本工作室提供游戏账号密码</strong>。如遇任何工作人员以"上星需要"为由向您索要账号密码，请立即拒绝并向客服举报。</p>
+      <p><strong>3.2</strong> 如您自愿选择其他需要账号托管的高级定制服务，您承诺所提供的账号为您本人合法所有，且账号无任何权属纠纷、封禁风险。本工作室对接触到的账号信息严格保密，服务完成后彻底清除。</p>
+      <p><strong>3.3 风险告知：</strong>您理解并同意，使用本工作室的服务（尤其是上星服务）可能存在违反游戏开发商或运营商用户协议的风险。您需在充分知晓此风险的前提下，自愿选择并委托我们进行服务。因游戏官方规则变动、检测机制升级等非我方故意或重大过失原因，导致账号被警告、限制、封禁、清分等一切损失，<strong>本工作室将尽力协助申诉，但不承担因此产生的直接或间接责任</strong>。我们通过规范操作，竭力规避此类风险，但无法做出100%的绝对承诺。</p>
+
+      <h2>四、服务规范与诚信交易准则</h2>
+      <p><strong>4.1 服务质量保证：</strong>本工作室保证所有护航人员均经过严格筛选与培训，具备顶尖的游戏技术与职业操守。在服务过程中，严禁使用任何外挂、修改器、脚本等作弊软件，一经证实工作人员存在作弊行为，我们将全额退还该笔服务费用，并赔偿您造成的直接损失。</p>
+      <p><strong>4.2 装备交易诚信规则：</strong></p>
+      <ul>
+        <li>（1）<strong>交易范围：</strong>本工作室装备交易服务专注于《和平精英》"地铁逃生"模式中的虚拟装备，包括但不限于金枪、传世武器等稀有道具。</li>
+        <li>（2）<strong>信息真实：</strong>发布交易信息的用户，须保证装备来源合法、描述真实准确。严禁发布虚假信息、来路不明的"黑货"或进行诈骗。</li>
+        <li>（3）<strong>担保交易：</strong>我们强烈建议并优先支持本工作室提供的担保交易模式。买家支付款项至本工作室，卖家交付装备，待买家确认无误后，本工作室再放款给卖家。这能最大限度保障双方资金与装备安全。</li>
+        <li>（4）<strong>责任豁免：</strong>若用户选择脱离本工作室私下交易，所产生的任何纠纷、被骗、被找回等情况，本工作室概不负责，亦无义务介入解决。</li>
+      </ul>
+      <p><strong>4.3 上星服务细则：</strong></p>
+      <ul>
+        <li>（1）您需明确指定上星的目标段位、星数、时间要求等，我们将根据此标准收费。</li>
+        <li>（2）在服务开始前，您需确保账号处于可正常进行排位赛的状态。</li>
+        <li>（3）上星服务通过游戏内联机带飞完成，您需在约定时间上线配合组队，因您个人原因未能按时上线导致服务延误，我们有权顺延服务或视为您放弃当次服务。</li>
+        <li>（4）上星过程中产生的正常游戏内消耗（如金币、铭文等），我们无义务补回。我们将尽力保护您的游戏资产（如点券、稀有道具），除非必要消耗并事先征得您的同意。</li>
+      </ul>
+
+      <h2>五、费用与支付</h2>
+      <p><strong>5.1</strong> 所有服务的价格以您下单时官方公布的报价或双方具体协商确认的价格为准。</p>
+      <p><strong>5.2 支付方式：</strong>本工作室目前仅支持<span class="highlight">微信支付</span>与<span class="highlight">现金支付</span>两种方式。请通过我们官方认证的微信账号或当面进行现金支付，勿向任何非官方渠道付款，否则损失自负。</p>
+      <p><strong>5.3 支付流程：</strong>采取<strong>"先下单后付钱"</strong>模式。您确认服务订单后，本工作室先行提供约定的护航/上星/交易服务，服务完成或交付后，您需在<strong>当日</strong>内完成费用支付。</p>
+      <p><strong>5.4 逾期支付：</strong>如您未按约定时间支付费用，本工作室有权暂停向您提供一切服务，直至费用结清。逾期超过7日的，本工作室有权按应付金额每日千分之五的标准收取滞纳金。</p>
+
+      <h2>六、退款与争议处理</h2>
+      <p><strong>6.1 护航/上星服务退款规则：</strong></p>
+      <ul>
+        <li>（1）未开始服务：您可随时取消订单，无需承担任何费用。</li>
+        <li>（2）服务进行中且未达目标：根据已完成进度比例结算费用，您仅需支付已完成部分。进度按已提升的星数/段位与总目标的占比计算。</li>
+        <li>（3）服务已完成达成目标：您应按约定全额支付服务费用，不支持退款或扣减。</li>
+        <li>（4）因您违反本协议第二条诚信义务导致服务无法继续，您仍需全额支付已产生的服务费用，并承担相应赔偿责任。</li>
+      </ul>
+      <p><strong>6.2 装备交易退款规则：</strong></p>
+      <ul>
+        <li>（1）买家确认交易后，因卖家原因未能成功交付或装备描述严重不符，买家有权取消交易，已付至本工作室的担保款项全额退还。</li>
+        <li>（2）装备交付并确认后，非因装备本身存在功能性缺陷或被官方收回，不支持退款。</li>
+      </ul>
+      <p><strong>6.3 争议解决：</strong>双方发生任何争议，应首先友好协商解决。协商不成的，任何一方均可向<strong>本工作室运营主体所在地有管辖权的人民法院</strong>提起诉讼。</p>
+
+      <h2>七、禁止行为与违约责任</h2>
+      <p><strong>7.1</strong> 您在使用本工作室服务过程中，不得从事以下行为：</p>
+      <ul>
+        <li>（1）利用我们的服务去侵犯他人权益、进行赌博或从事任何违法犯罪活动。</li>
+        <li>（2）对我们或我们的工作人员进行侮辱、诽谤、人身攻击。</li>
+        <li>（3）恶意拖欠费用、拒绝支付、利用交易规则漏洞牟取不当利益。</li>
+        <li>（4）在交易中发布虚假信息、使用"黑卡"或来源非法的资金，或出售来源非法的"黑货"装备。</li>
+      </ul>
+      <p><strong>7.2</strong> 如您违反上述约定，我们有权立即中止或终止向您提供服务，冻结相关交易款项，并不予退还已收取的费用。您需独立承担由此引发的一切法律后果，并赔偿给我们造成的全部损失（包括但不限于商誉损失、律师费、诉讼费等）。</p>
+
+      <h2>八、隐私政策</h2>
+      <p>我们高度重视您的隐私。您的个人信息及游戏数据仅用于提供本协议项下服务，我们将采取严格的管理与技术措施保护您的信息安全。除法律法规要求或为本协议履行之必要，我们不会向任何第三方提供您的信息。</p>
+
+      <h2>九、免责声明</h2>
+      <p><strong>9.1 游戏风险免责：</strong>如第三条所述，因游戏官方政策、规则、技术更新等原因导致的服务受阻、账号受限等风险，由您主要承担。但我们承诺尽最大努力提供合规、低风险的服务方案。</p>
+      <p><strong>9.2 不可抗力：</strong>因自然灾害、战争、网络攻击、政府行为、政策法规变更等不可抗力因素导致服务中断或延迟，我们不承担违约责任，但会及时通知您并尽力减小损失。</p>
+      <p><strong>9.3 第三方服务：</strong>我们对游戏开发商、支付平台等第三方的行为、政策或故障不承担责任。</p>
+
+      <h2>十、协议变更与通知</h2>
+      <p><strong>10.1</strong> 我们有权根据法律法规变化及运营需要，对本协议条款进行修改。修改后的协议将在发布时生效，并替换原有协议。</p>
+      <p><strong>10.2</strong> 我们将通过您预留的有效联系方式，以消息推送、公告等方式通知您。您继续使用我们的服务，即视为您已接受修改后的协议。</p>
+
+      <h2>十一、联系我们</h2>
+      <p>如您对本协议或我们的服务有任何疑问、建议或投诉，请通过以下方式联系我们：</p>
+
+      <div class="contact-card">
+        <h3>📬 联系方式</h3>
+        <div class="contact-info">
+          <div class="contact-item">
+            <span class="contact-label">客服：</span>
+            <span><strong>雨晴_o</strong></span>
+          </div>
+          <div class="contact-item">
+            <span class="contact-label">QQ：</span>
+            <span><strong>3808216847</strong></span>
+          </div>
+        </div>
+      </div>
+
+      <p style="text-align: center; margin-top: 30px; color: #c0c0ff; font-weight: bold;">
+        再次感谢您对QUEDE Studio护航工作室的信任与选择。<br>让我们携手，共铸诚信、安全的游戏服务环境，一起享受巅峰竞技的乐趣！
+      </p>
+
+    </div>
+
+    <!-- 底部 -->
+    <div class="footer">
+      <a href="https://quedehphh.github.io/hh/">&#8592; 返回主页</a>
+      <span class="divider">|</span>
+      <span>© 2026 QUEDE Studio 护航工作室</span>
+      <span class="divider">|</span>
+      <span>客服：雨晴_o</span>
+      <span class="divider">|</span>
+      <span>QQ：3808216847</span>
+    </div>
+
+  </div>
+
+</body>
+</html>
