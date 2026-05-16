@@ -41,6 +41,13 @@
     .panel.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     
+    /* 分类标签 */
+    .category-tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+    .category-tab { padding: 8px 16px; background: rgba(30,30,60,0.6); border: 1px solid rgba(100,100,255,0.2); color: #b0b0ff; cursor: pointer; border-radius: 20px; font-weight: bold; transition: all 0.3s; font-size: 13px; }
+    .category-tab.active { background: #6c6cff; color: white; border-color: #6c6cff; }
+    .category-tab:hover { background: rgba(108,108,255,0.3); }
+    .dish-category { font-size: 12px; color: #8080cc; margin-bottom: 5px; }
+    
     .dish-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; }
     .dish-card { background: rgba(40,40,80,0.5); border: 1px solid rgba(100,100,255,0.2); border-radius: 10px; padding: 20px; transition: all 0.3s; }
     .dish-card:hover { border-color: #6c6cff; box-shadow: 0 5px 15px rgba(108,108,255,0.2); transform: translateY(-2px); }
@@ -64,6 +71,37 @@
     
     hr { border: none; border-top: 1px solid rgba(100,100,255,0.2); margin: 20px 0; }
     select { background: rgba(10,10,30,0.8); color: #e0e0ff; }
+
+    /* 底部样式 */
+    .footer {
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(100,100,255,0.2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      font-size: 13px;
+    }
+    .footer a {
+      color: #8080cc;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .footer a:hover {
+      color: #c0c0ff;
+      text-decoration: underline;
+    }
+    .footer .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: #b0b0ff;
+    }
+    .divider {
+      color: rgba(100,100,255,0.3);
+    }
   </style>
 </head>
 <body>
@@ -109,6 +147,13 @@
 
       <!-- 点单区 -->
       <div class="panel active" id="orderPanel">
+        <div class="category-tabs">
+          <button class="category-tab active" data-category="all" onclick="filterDishes('all')">📋 全部</button>
+          <button class="category-tab" data-category="和平精英单" onclick="filterDishes('和平精英单')">🔫 和平精英单</button>
+          <button class="category-tab" data-category="和平装备" onclick="filterDishes('和平装备')">🎒 和平装备</button>
+          <button class="category-tab" data-category="王者单" onclick="filterDishes('王者单')">👑 王者单</button>
+          <button class="category-tab" data-category="三角洲护航" onclick="filterDishes('三角洲护航')">🎯 三角洲护航</button>
+        </div>
         <div class="dish-grid" id="dishGrid"></div>
       </div>
 
@@ -130,6 +175,12 @@
           <h3>➕ 添加服务</h3>
           <div style="display:flex; gap:10px; flex-wrap:wrap;">
             <input type="text" id="dishName" placeholder="服务名称">
+            <select id="dishCategory">
+              <option value="和平精英单">🔫 和平精英单</option>
+              <option value="和平装备">🎒 和平装备</option>
+              <option value="王者单">👑 王者单</option>
+              <option value="三角洲护航">🎯 三角洲护航</option>
+            </select>
             <input type="number" id="dishPrice" placeholder="价格" step="0.01">
             <input type="text" id="dishDesc" placeholder="描述(选填)">
             <button class="btn" onclick="addDish()">添加</button>
@@ -149,9 +200,26 @@
         </div>
       </div>
     </div>
-  </div>
 
-  <script>
+    <!-- 底部信息 -->
+    <div class="footer">
+      <div class="contact-item">
+        <span>💬</span>
+        <span>客服QQ：<a href="https://wpa.qq.com/msgrd?v=3&uin=3808216847&site=qq&menu=yes" target="_blank">3808216847</a></span>
+      </div>
+      <span class="divider">|</span>
+      <div class="contact-item">
+        <span>💚</span>
+        <span>欢迎点单</span>
+      </div>
+      <span class="divider">|</span>
+      <a href="还未制作" target="_blank">📄 用户协议</a>
+      <span class="divider">|</span>
+      <a href="还未制作" target="_blank">🔒 隐私政策</a>
+    </div>
+
+  </div>
+    <script>
     // ============ 配置区 - 改成你自己的信息 ============
     const GITEE_TOKEN = '4a115efe6c57c0b7947746993a759689';
     const REPO_OWNER = 'syqdsg';
@@ -163,6 +231,7 @@
     let currentUser = null;
     let cart = [];
     let cachedData = { users: [], dishes: [], orders: [] };
+    let currentCategory = 'all';
 
     // ============ 数据读写 ============
     async function apiRequest(method, path, body = null) {
@@ -190,7 +259,6 @@
         return { data: JSON.parse(content), sha: data.sha };
       } catch (e) {
         if (e.message.includes('404')) {
-          // 文件不存在，初始化
           return null;
         }
         throw e;
@@ -209,7 +277,6 @@
 
     async function loadData() {
       try {
-        // 初始化文件如果不存在
         await initIfNeeded();
         
         const [usersResult, dishesResult, ordersResult] = await Promise.all([
@@ -224,7 +291,7 @@
           orders: ordersResult?.data?.orders || []
         };
         
-        console.log('数据加载成功', cachedData);
+        console.log('数据加载成功');
       } catch (e) {
         console.error('数据加载失败:', e);
         showMessage('authMsg', '数据加载失败: ' + e.message, '#ff4757');
@@ -232,7 +299,6 @@
     }
 
     async function initIfNeeded() {
-      // 检查并创建accounts.json
       const accountsResult = await readFile('accounts.json');
       if (!accountsResult) {
         await writeFile('accounts.json', {
@@ -246,20 +312,18 @@
         });
       }
       
-      // 检查并创建dishes.json
       const dishesResult = await readFile('dishes.json');
       if (!dishesResult) {
         await writeFile('dishes.json', {
           dishes: [
-            { id: 'd001', name: '品牌Logo设计', price: 500, desc: '含3版修改', available: true },
-            { id: 'd002', name: '海报设计', price: 300, desc: '活动海报设计', available: true },
-            { id: 'd003', name: 'UI界面设计', price: 2000, desc: '移动端/网页端', available: true },
-            { id: 'd004', name: '品牌VI手册', price: 5000, desc: '完整VI系统', available: true }
+            { id: 'd001', name: '战神局护航', price: 100, desc: '高分段全程护航', available: true, category: '和平精英单' },
+            { id: 'd002', name: '稀有皮肤', price: 50, desc: 'M416冰川皮肤', available: true, category: '和平装备' },
+            { id: 'd003', name: '王者代练', price: 200, desc: '王者-星耀段位', available: true, category: '王者单' },
+            { id: 'd004', name: '三角洲全程', price: 300, desc: '全图探索+物资', available: true, category: '三角洲护航' }
           ]
         });
       }
       
-      // 检查并创建orders.json
       const ordersResult = await readFile('orders.json');
       if (!ordersResult) {
         await writeFile('orders.json', { orders: [] });
@@ -275,6 +339,16 @@
       if (!el) return;
       el.innerHTML = `<div class="message" style="color:${color}; border-color:${color};">${text}</div>`;
       setTimeout(() => { if (el) el.innerHTML = ''; }, 3000);
+    }
+
+    function getCategoryIcon(category) {
+      const icons = {
+        '和平精英单': '🔫',
+        '和平装备': '🎒',
+        '王者单': '👑',
+        '三角洲护航': '🎯'
+      };
+      return icons[category] || '📦';
     }
 
     // ============ 认证 ============
@@ -352,7 +426,6 @@
         document.getElementById('regUser').value = '';
         document.getElementById('regPass').value = '';
       } catch (e) {
-        // 回滚
         cachedData.users.pop();
         showMessage('authMsg', '注册失败: ' + e.message, '#ff4757');
       }
@@ -375,6 +448,7 @@
     function logout() {
       currentUser = null;
       cart = [];
+      currentCategory = 'all';
       document.getElementById('authBox').style.display = 'block';
       document.getElementById('mainApp').classList.remove('active');
       document.getElementById('adminBadge').style.display = 'none';
@@ -406,18 +480,32 @@
       if (currentUser?.role === 'admin') renderAdmin();
     }
 
+    // ============ 分类筛选 ============
+    function filterDishes(category) {
+      currentCategory = category;
+      document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+      event.target.classList.add('active');
+      renderDishes();
+    }
+
     // ============ 点单区 ============
     function renderDishes() {
-      const available = cachedData.dishes.filter(d => d.available !== false);
+      const available = cachedData.dishes.filter(d => {
+        if (d.available === false) return false;
+        if (currentCategory === 'all') return true;
+        return d.category === currentCategory;
+      });
+      
       const grid = document.getElementById('dishGrid');
       
       if (available.length === 0) {
-        grid.innerHTML = '<div class="empty-state">暂无可用服务</div>';
+        grid.innerHTML = '<div class="empty-state">该分区暂无服务</div>';
         return;
       }
 
       grid.innerHTML = available.map(d => `
         <div class="dish-card">
+          <div class="dish-category">${getCategoryIcon(d.category)} ${d.category || '未分类'}</div>
           <div class="dish-name">${d.name}</div>
           <div class="dish-price">¥${d.price.toFixed(2)}</div>
           ${d.desc ? `<div class="dish-desc">${d.desc}</div>` : ''}
@@ -434,7 +522,7 @@
       if (exist) {
         exist.quantity++;
       } else {
-        cart.push({ dishId, name: dish.name, price: dish.price, quantity: 1 });
+        cart.push({ dishId, name: dish.name, price: dish.price, quantity: 1, category: dish.category });
       }
       updateCartCount();
       alert(`已添加：${dish.name}`);
@@ -464,7 +552,7 @@
       container.innerHTML = cart.map((c, i) => `
         <div class="order-item">
           <div>
-            <strong>${c.name}</strong>
+            <strong>${getCategoryIcon(c.category)} ${c.name}</strong>
             <div style="color:#8080cc;">¥${c.price.toFixed(2)} x ${c.quantity}</div>
           </div>
           <div>
@@ -499,25 +587,34 @@
         id: generateId(),
         userId: currentUser.id,
         username: currentUser.username,
-        items: [...cart],
+        items: JSON.parse(JSON.stringify(cart)),
         total: cart.reduce((s, c) => s + c.price * c.quantity, 0),
         status: '已下单',
         createdAt: new Date().toISOString()
       };
 
-      cachedData.orders.push(order);
+      const savedCart = [...cart];
+      cart = [];
+      updateCartCount();
 
       try {
         const result = await readFile('orders.json');
+        if (result?.data?.orders) {
+          cachedData.orders = result.data.orders;
+        }
+        
+        cachedData.orders.push(order);
+        
         await writeFile('orders.json', { orders: cachedData.orders }, result?.sha);
-        cart = [];
-        updateCartCount();
+        
         refreshUI();
         alert('✅ 订单已提交！');
         switchPanel('myOrdersPanel');
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.querySelectorAll('.tab-btn')[2].classList.add('active');
       } catch (e) {
-        cachedData.orders.pop();
+        cart = savedCart;
+        updateCartCount();
         alert('提交失败: ' + e.message);
       }
     }
@@ -539,7 +636,7 @@
       container.innerHTML = myOrders.map(o => {
         const badgeClass = o.status === '已下单' ? 'badge-pending' : 
                           o.status === '未支付' ? 'badge-unpaid' : 'badge-completed';
-        const items = o.items.map(i => `${i.name} x${i.quantity}`).join(', ');
+        const items = o.items.map(i => `${getCategoryIcon(i.category)} ${i.name} x${i.quantity}`).join(', ');
         return `
           <div class="order-item">
             <div>
@@ -556,11 +653,11 @@
     function renderAdmin() {
       if (!currentUser || currentUser.role !== 'admin') return;
       
-      // 菜品管理
       document.getElementById('adminDishes').innerHTML = cachedData.dishes.map(d => `
         <div class="order-item">
           <div>
-            <strong>${d.name}</strong> - ¥${d.price.toFixed(2)}
+            <strong>${getCategoryIcon(d.category)} ${d.name}</strong> - ¥${d.price.toFixed(2)}
+            <span style="color:#8080cc; margin-left:10px;">[${d.category}]</span>
             ${d.available === false ? '<span style="color:#ff4757;">[已下架]</span>' : ''}
           </div>
           <div>
@@ -572,7 +669,6 @@
         </div>
       `).join('');
 
-      // 用户审核
       document.getElementById('adminUsers').innerHTML = cachedData.users.map(u => `
         <div class="order-item">
           <div>
@@ -588,10 +684,9 @@
         </div>
       `).join('');
 
-      // 订单管理
       const sorted = [...cachedData.orders].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       document.getElementById('adminOrders').innerHTML = sorted.map(o => {
-        const items = o.items.map(i => `${i.name} x${i.quantity}`).join(', ');
+        const items = o.items.map(i => `${getCategoryIcon(i.category)} ${i.name} x${i.quantity}`).join(', ');
         return `
           <div class="order-item">
             <div>
@@ -613,6 +708,7 @@
 
     async function addDish() {
       const name = document.getElementById('dishName').value.trim();
+      const category = document.getElementById('dishCategory').value;
       const price = parseFloat(document.getElementById('dishPrice').value);
       const desc = document.getElementById('dishDesc').value.trim();
 
@@ -624,6 +720,7 @@
       cachedData.dishes.push({
         id: generateId(),
         name,
+        category,
         price,
         desc,
         available: true
