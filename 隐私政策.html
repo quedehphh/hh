@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>隐私政策 - QUEDE Studio护航工作室</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Microsoft YaHei', sans-serif; }
+    body { background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 100%); min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; padding: 20px; }
+
+    .container { max-width: 900px; width: 100%; background: rgba(20,20,40,0.9); backdrop-filter: blur(20px); border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); padding: 40px; color: #e0e0ff; border: 1px solid rgba(100,100,255,0.2); margin-top: 20px; margin-bottom: 20px; }
+
+    /* 顶部导航 */
+    .top-nav { display: flex; align-items: center; gap: 15px; margin-bottom: 30px; flex-wrap: wrap; }
+    .back-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: rgba(30,30,60,0.8); border: 1px solid rgba(100,100,255,0.3); color: #c0c0ff; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 14px; transition: all 0.3s; cursor: pointer; }
+    .back-btn:hover { background: rgba(108,108,255,0.3); border-color: #6c6cff; color: #fff; box-shadow: 0 5px 15px rgba(108,108,255,0.3); transform: translateY(-2px); }
+    .back-icon { font-size: 18px; }
+
+    h1 { text-align: center; color: #c0c0ff; margin-bottom: 5px; font-size: 2em; }
+    .subtitle { text-align: center; color: #8080cc; margin-bottom: 30px; font-size: 14px; }
+
+    .version-info { text-align: center; color: #6060aa; font-size: 12px; margin-bottom: 30px; padding: 10px; background: rgba(30,30,60,0.5); border-radius: 8px; }
+
+    /* 隐私政策内容样式 */
+    .privacy-content { font-size: 14px; line-height: 1.8; }
+
+    .privacy-content h2 { color: #c0c0ff; font-size: 1.3em; margin-top: 30px; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid rgba(100,100,255,0.2); }
+    .privacy-content h3 { color: #b0b0ff; font-size: 1.05em; margin-top: 15px; margin-bottom: 10px; }
+    .privacy-content p { margin-bottom: 12px; color: #d0d0f0; }
+    .privacy-content strong { color: #e0e0ff; }
+    .privacy-content .highlight { color: #ffa502; font-weight: bold; }
+
+    .privacy-content ul, .privacy-content ol { margin-bottom: 12px; padding-left: 20px; }
+    .privacy-content li { margin-bottom: 6px; color: #d0d0f0; }
+
+    /* 信息收集表格 */
+    .info-table { width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 13px; }
+    .info-table th { background: rgba(108,108,255,0.2); padding: 12px 15px; text-align: left; color: #c0c0ff; border: 1px solid rgba(100,100,255,0.2); }
+    .info-table td { padding: 10px 15px; border: 1px solid rgba(100,100,255,0.15); color: #d0d0f0; }
+    .info-table tr:hover td { background: rgba(108,108,255,0.05); }
+
+    /* 安全图标列表 */
+    .security-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 15px 0; }
+    .security-item { background: rgba(30,30,60,0.5); border: 1px solid rgba(100,100,255,0.2); border-radius: 10px; padding: 15px; text-align: center; }
+    .security-item .icon { font-size: 28px; margin-bottom: 8px; }
+    .security-item .title { font-weight: bold; color: #c0c0ff; margin-bottom: 5px; }
+    .security-item .desc { font-size: 12px; color: #8080cc; }
+
+    /* 联系卡片 */
+    .contact-card { background: rgba(30,30,60,0.6); border: 1px solid rgba(100,100,255,0.3); border-radius: 12px; padding: 20px; margin-top: 25px; text-align: center; }
+    .contact-card h3 { color: #c0c0ff; margin-bottom: 15px; font-size: 16px; }
+    .contact-info { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; }
+    .contact-item { display: flex; align-items: center; gap: 8px; color: #b0b0ff; font-size: 14px; }
+    .contact-label { color: #8080cc; }
+
+    /* 重点提示框 */
+    .notice-box { background: rgba(255,165,2,0.08); border-left: 4px solid #ffa502; padding: 15px 20px; border-radius: 0 8px 8px 0; margin: 20px 0; }
+    .notice-box p { color: #ffa502; margin: 0; font-size: 14px; }
+
+    /* 底部 */
+    .footer { margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(100,100,255,0.2); display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 15px; font-size: 13px; }
+    .footer a { color: #8080cc; text-decoration: none; transition: color 0.3s; }
+    .footer a:hover { color: #c0c0ff; text-decoration: underline; }
+    .footer .divider { color: rgba(100,100,255,0.3); }
+
+    /* 滚动条 */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: rgba(10,10,30,0.5); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb { background: rgba(108,108,255,0.4); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(108,108,255,0.6); }
+
+    /* 响应式 */
+    @media (max-width: 600px) {
+      .container { padding: 20px; }
+      h1 { font-size: 1.5em; }
+      .privacy-content { font-size: 13px; }
+      .info-table { font-size: 11px; }
+      .info-table th, .info-table td { padding: 8px 10px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- 顶部导航 -->
+    <div class="top-nav">
+      <a href="https://quedehphh.github.io/hh/" class="back-btn">
+        <span class="back-icon">&#8592;</span> 返回主页
+      </a>
+    </div>
+
+    <!-- 标题 -->
+    <h1>隐私政策</h1>
+    <p class="subtitle">QUEDE Studio 护航工作室</p>
+
+    <!-- 版本信息 -->
+    <div class="version-info">
+      <strong>版本更新日期：</strong>2026年05月16日 &nbsp;|&nbsp; <strong>生效日期：</strong>2026年05月16日
+    </div>
+
+    <!-- 重要提示 -->
+    <div class="notice-box">
+      <p><strong>📢 本隐私政策是《用户服务协议》的组成部分，与用户协议具有同等法律效力。请您仔细阅读，特别是加粗或高亮显示的条款。</strong></p>
+    </div>
+
+    <!-- 隐私政策正文 -->
+    <div class="privacy-content">
+
+      <p><strong>引言</strong></p>
+      <p>QUEDE Studio护航工作室（以下简称"我们"或"本工作室"）深知个人信息对您的重要性，并会尽全力保护您的个人信息安全可靠。我们致力于维持您对我们的信任，恪守以下原则：权责一致原则、目的明确原则、选择同意原则、最小必要原则、确保安全原则、主体参与原则、公开透明原则。同时，我们承诺将按业界成熟的安全标准，采取相应的安全保护措施来保护您的个人信息。</p>
+      <p>本隐私政策旨在向您说明我们如何收集、使用、存储、共享和保护您的个人信息，以及您所享有的相关权利。请在使用我们的服务前，仔细阅读并了解本隐私政策。</p>
+
+      <h2>一、我们如何收集和使用您的个人信息</h2>
+      <p>个人信息是指以电子或者其他方式记录的能够单独或者与其他信息结合识别特定自然人身份或者反映特定自然人活动情况的各种信息。我们仅会出于本政策所述的以下目的，收集和使用您的个人信息：</p>
+
+      <h3>1.1 您主动提供的信息</h3>
+      <table class="info-table">
+        <thead>
+          <tr>
+            <th>信息类型</th>
+            <th>具体内容</th>
+            <th>收集目的</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>联系信息</strong></td>
+            <td>QQ号码、游戏内昵称</td>
+            <td>与您沟通服务需求、确认订单、提供售后支持</td>
+          </tr>
+          <tr>
+            <td><strong>支付信息</strong></td>
+            <td>现金交易记录</td>
+            <td>完成服务费用的结算与对账</td>
+          </tr>
+          <tr>
+            <td><strong>游戏信息</strong></td>
+            <td>游戏ID、当前段位/星数、目标段位/星数</td>
+            <td>评估服务难度、制定护航/上星方案、确认服务进度</td>
+          </tr>
+          <tr>
+            <td><strong>交易信息</strong></td>
+            <td>装备名称、属性描述、交易价格</td>
+            <td>完成装备交易的撮合、担保与交付</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>1.2 在服务过程中自动收集的信息</h3>
+      <p>在您使用我们的服务过程中，我们可能会自动收集以下信息：</p>
+      <ul>
+        <li><strong>聊天记录：</strong>您与客服（雨晴_o）之间的QQ聊天记录，用于确认服务内容、处理争议及提升服务质量。</li>
+        <li><strong>游戏对局记录：</strong>在上星/护航服务过程中产生的游戏对局结果截图，用于向您汇报服务进度及作为服务完成的凭证。</li>
+        <li><strong>交易记录：</strong>装备交易的订单信息、交付凭证，用于保障交易双方权益及处理可能的纠纷。</li>
+      </ul>
+
+      <h3>1.3 我们不会收集的信息</h3>
+      <p>为保障您的账号安全，我们<strong>明确不会</strong>收集以下信息：</p>
+      <ul>
+        <li><strong>游戏账号密码：</strong>我们的上星服务通过游戏内联机带飞完成，<span class="highlight">不会要求您提供游戏账号密码</span>。如有任何人以此名义索取，请立即拒绝并举报。</li>
+        <li>身份证号码、银行卡号等敏感个人身份信息。</li>
+        <li>您设备中的通讯录、相册、位置等与游戏服务无关的隐私数据。</li>
+      </ul>
+
+      <h2>二、我们如何使用您的信息</h2>
+      <p>我们严格遵守法律法规的规定及与您的约定，将收集的信息用于以下用途：</p>
+      <ol>
+        <li><strong>提供服务：</strong>根据您的要求，匹配护航人员、执行上星服务、撮合装备交易。</li>
+        <li><strong>沟通联系：</strong>通过您提供的QQ与您确认订单细节、汇报服务进度。</li>
+        <li><strong>支付结算：</strong>核对服务费用、确认收款、处理退款。</li>
+        <li><strong>安全保障：</strong>防范欺诈、恶意退款、逃单等行为，保护您及我们的合法权益。</li>
+        <li><strong>争议处理：</strong>在发生纠纷时，作为事实核查的依据。</li>
+        <li><strong>服务优化：</strong>基于历史订单数据分析，改进我们的服务质量与用户体验。</li>
+      </ol>
+      <p>若我们将信息用于本政策未载明的其他用途，会事先征得您的同意。</p>
+
+      <h2>三、我们如何存储和保护您的信息</h2>
+
+      <h3>3.1 存储地点与期限</h3>
+      <ul>
+        <li><strong>存储地点：</strong>您的个人信息仅存储于我们工作人员的本地设备及经过安全加密的即时通讯工具（QQ）聊天记录中。我们不会将您的信息上传至任何第三方云存储平台。</li>
+        <li><strong>存储期限：</strong>我们仅在为您提供服务所必需的期间内保留您的个人信息。服务完成后，与订单相关的聊天记录及截图将保留<strong>不超过90天</strong>（用于处理可能的售后争议），之后将予以清除。法律另有规定的除外。</li>
+      </ul>
+
+      <h3>3.2 安全保护措施</h3>
+      <p>我们已采取符合业界标准的安全防护措施保护您提供的个人信息，防止数据遭到未经授权的访问、公开披露、使用、修改、损坏或丢失：</p>
+
+      <div class="security-list">
+        <div class="security-item">
+          <div class="icon">🔐</div>
+          <div class="title">访问控制</div>
+          <div class="desc">仅客服雨晴_o有权接触用户信息，严格限制访问权限</div>
+        </div>
+        <div class="security-item">
+          <div class="icon">🗑️</div>
+          <div class="title">定期清理</div>
+          <div class="desc">服务完成后定期清除用户数据，最小化信息留存</div>
+        </div>
+        <div class="security-item">
+          <div class="icon">📵</div>
+          <div class="title">禁止外泄</div>
+          <div class="desc">工作人员签署保密承诺，绝不对外泄露用户信息</div>
+        </div>
+        <div class="security-item">
+          <div class="icon">🛡️</div>
+          <div class="title">设备安全</div>
+          <div class="desc">工作设备设置密码锁屏，防止他人非法接触</div>
+        </div>
+        <div class="security-item">
+          <div class="icon">🚫</div>
+          <div class="title">无第三方存储</div>
+          <div class="desc">用户信息不上传云端，杜绝第三方平台泄露风险</div>
+        </div>
+        <div class="security-item">
+          <div class="icon">📋</div>
+          <div class="title">日志管理</div>
+          <div class="desc">记录信息访问痕迹，可追溯任何异常操作</div>
+        </div>
+      </div>
+
+      <h3>3.3 安全事件应对</h3>
+      <p>若不慎发生个人信息安全事件，我们将按照法律法规的要求，及时向您告知：安全事件的基本情况和可能的影响、我们已采取或将要采取的处置措施、您可自主防范和降低风险的建议、对您的补救措施等。我们将通过QQ及时向您推送通知。</p>
+
+      <h2>四、我们如何共享、转让、公开披露您的信息</h2>
+
+      <h3>4.1 共享</h3>
+      <p>我们<strong>不会</strong>与任何第三方公司、组织和个人分享您的个人信息，但以下情况除外：</p>
+      <ul>
+        <li><strong>在获取您明确同意的情况下共享：</strong>在向您告知接收方的名称、联系方式、处理目的、处理方式和个人信息的种类，并获得您的明确同意后，我们会与其他方共享您的个人信息。</li>
+        <li><strong>在法定情形下的共享：</strong>我们可能会根据法律法规规定、诉讼争议解决需要，或按行政、司法机关依法提出的要求，对外共享您的个人信息。</li>
+      </ul>
+
+      <h3>4.2 转让</h3>
+      <p>我们<strong>不会</strong>将您的个人信息转让给任何公司、组织和个人，但以下情况除外：</p>
+      <ul>
+        <li>在获取明确同意的情况下转让：获得您的明确同意后，我们会向其他方转让您的个人信息。</li>
+        <li>在涉及合并、收购或破产清算时，如涉及到个人信息转让，我们会要求新的持有您个人信息的公司、组织继续受本隐私政策的约束，否则我们将要求该公司、组织重新向您征求授权同意。</li>
+      </ul>
+
+      <h3>4.3 公开披露</h3>
+      <p>我们<strong>不会</strong>公开披露您的个人信息。如确需披露，我们会告知您披露的目的、披露信息的类型及可能涉及的敏感信息，并征得您的明确同意。</p>
+
+      <h2>五、您的权利</h2>
+      <p>按照中国相关的法律法规，我们保障您对自己的个人信息行使以下权利：</p>
+      <ol>
+        <li><strong>访问您的个人信息：</strong>您有权查阅我们持有的关于您的个人信息。您可以通过联系客服（雨晴_o）提出申请。</li>
+        <li><strong>更正您的个人信息：</strong>当您发现我们处理的关于您的个人信息有错误时，您有权要求我们做出更正。</li>
+        <li><strong>删除您的个人信息：</strong>在以下情形中，您可以向我们提出删除个人信息的请求：
+          <ul>
+            <li>我们处理个人信息的行为违反法律法规；</li>
+            <li>我们收集、使用您的个人信息，却未征得您的同意；</li>
+            <li>我们处理个人信息的行为违反了与您的约定；</li>
+            <li>您不再使用我们的服务，或您注销了相关账号；</li>
+            <li>我们不再为您提供服务。</li>
+          </ul>
+        </li>
+        <li><strong>撤回同意：</strong>您有权撤回已授予的同意。撤回同意后，我们不会再处理您的个人信息。但撤回同意的决定，不会影响此前基于您的授权而开展的个人信息处理。</li>
+      </ol>
+
+      <h2>六、未成年人保护</h2>
+      <p>我们的服务主要面向大众。<strong>如果您是未满18周岁的未成年人，建议在法定监护人的陪同下阅读本隐私政策，并在征得监护人同意的前提下使用我们的服务。</strong>我们不会在明知对方为未成年人的情况下，未经其监护人同意而收集其个人信息。如监护人发现我们在未获同意的情况下收集了未成年人的个人信息，请及时联系我们，我们将尽快删除相关数据。</p>
+
+      <h2>七、第三方服务</h2>
+      <p>我们的服务可能涉及以下第三方平台，其隐私政策独立于本政策：</p>
+      <ul>
+        <li><strong>腾讯游戏（和平精英/王者荣耀/三角洲行动）：</strong>我们的护航及上星服务在腾讯游戏平台内进行，您的游戏数据由腾讯公司管理，适用其<a href="https://game.qq.com/privacy_guide.shtml" target="_blank" style="color:#8080cc;">隐私保护指引</a>。</li>
+      </ul>
+      <p>请您注意，我们对上述第三方的隐私政策不承担任何责任。在使用第三方服务前，建议您仔细阅读其隐私条款。</p>
+
+      <h2>八、本隐私政策的更新</h2>
+      <p>我们可能会适时对本隐私政策进行修订。未经您明确同意，我们不会削减您按照本隐私政策所应享有的权利。我们会在本页面发布更新后的版本，并通过我们的官方渠道（QQ）通知您。</p>
+      <p>对于重大变更，我们还会提供更为显著的通知（包括但不限于单独发送消息说明变更内容）。重大变更包括但不限于：</p>
+      <ul>
+        <li>我们的服务模式发生重大变化，如处理个人信息的目的、处理的个人信息类型、个人信息的使用方式等；</li>
+        <li>我们在所有权结构、组织架构等方面发生重大变化；</li>
+        <li>个人信息共享、转让或公开披露的主要对象发生变化；</li>
+        <li>您参与个人信息处理方面的权利及其行使方式发生重大变化。</li>
+      </ul>
+
+      <h2>九、联系我们</h2>
+      <p>如您对本隐私政策有任何疑问、意见或建议，或希望行使您的个人信息相关权利，请通过以下方式联系我们。我们将在<strong>3个工作日内</strong>回复您的请求：</p>
+
+      <div class="contact-card">
+        <h3>📬 联系方式</h3>
+        <div class="contact-info">
+          <div class="contact-item">
+            <span class="contact-label">客服：</span>
+            <span><strong>雨晴_o</strong></span>
+          </div>
+          <div class="contact-item">
+            <span class="contact-label">QQ：</span>
+            <span><strong>3808216847</strong></span>
+          </div>
+        </div>
+      </div>
+
+      <p style="text-align: center; margin-top: 30px; color: #c0c0ff; font-weight: bold;">
+        QUEDE Studio护航工作室承诺，您的信任是我们最宝贵的财富。<br>我们将始终以最严谨的态度保护您的个人信息安全。
+      </p>
+
+    </div>
+
+    <!-- 底部 -->
+    <div class="footer">
+      <a href="https://quedehphh.github.io/hh/">&#8592; 返回主页</a>
+      <span class="divider">|</span>
+      <span>© 2026 QUEDE Studio 护航工作室</span>
+      <span class="divider">|</span>
+      <span>客服：雨晴_o</span>
+      <span class="divider">|</span>
+      <span>QQ：3808216847</span>
+    </div>
+
+  </div>
+
+</body>
+</html>
